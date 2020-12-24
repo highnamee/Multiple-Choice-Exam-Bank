@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
-from Utils.Models import *
+from Models import *
+
 """
 Install: pip install mysql-connector-python
 
@@ -11,26 +12,112 @@ FLUSH PRIVILEGES;
 This is example, let's create a function as API
 """
 
-try:
-    connection = mysql.connector.connect(host='localhost',database='MCQS_EXAMS_BANK',user='root',password='very_strong_password',auth_plugin = 'mysql_native_password')
-    if connection.is_connected():
-        SQL = "select * from student;"
-        cursor = connection.cursor()
-        cursor.execute(SQL)
-        result_list = cursor.fetchall()      #return sql result
-        #print("fetch result-->",result_list)  #is s list type, need to be a dict
-        fields_list = cursor.description   # sql key name
-        #print("fields result -->",fields_list)
+# try:
+#     connection = mysql.connector.connect(host='localhost', database='MCQS_EXAMS_BANK',
+#                                          user='root', password='very_strong_password', auth_plugin='mysql_native_password')
+#     if connection.is_connected():
+#         SQL = "select * from student;"
+#         cursor = connection.cursor()
+#         cursor.execute(SQL)
+#         result_list = cursor.fetchall()  # return sql result
+#         # print("fetch result-->",result_list)  #is s list type, need to be a dict
+#         fields_list = cursor.description   # sql key name
+#         #print("fields result -->",fields_list)
 
-        # Convert to Object
-        student_list = [Student(item[0], item[1], item[2], item[3], item[4], item[5], item[6]) for item in result_list]
-        for item in student_list:
-            print(item)
+#         # Convert to Object
+#         student_list = [Student(item[0], item[1], item[2], item[3],
+#                                 item[4], item[5], item[6]) for item in result_list]
+#         for item in student_list:
+#             print(item)
 
-        cursor.close()
-        connection.close()
-except Error as e:
-    print("Error while connection to Mysql", e)
-finally:
-    connection.close()
-    print("==== mysql closed===")
+#         cursor.close()
+#         connection.close()
+# except Error as e:
+#     print("Error while connection to Mysql", e)
+# finally:
+#     connection.close()
+#     print("==== mysql closed===")
+
+
+class studentUtils:
+    def __init__(self):
+        try:
+            self.connection = mysql.connector.connect(
+                host='localhost', database='MCQS_EXAMS_BANK', user='root', password='very_strong_password', auth_plugin='mysql_native_password')
+        except Error as e:
+            print("Error while connection to Mysql", e)
+
+    # Data req. 18
+    # Return ExamView object
+    def viewPerformedExam(self, subCode, examDate, examCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('view_performed_exam', [subCode, examDate, examCode])
+            examItem = [ExamViewItem(*item) for result in cursor.stored_results() for item in result]
+            exam = ExamView(examItem)
+            cursor.close()
+            return exam
+
+    # Data req. 19
+    # Return ExamSolutionView object
+    def viewExamWithSolutution(self, subCode, examDate, examCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('view_exam_with_solution', [subCode, examDate, examCode])
+            examItem = [ExamSolutionViewItem(*item) for result in cursor.stored_results() for item in result]
+            exam = ExamSolutionView(examItem)
+            cursor.close()
+            return exam
+
+    # Data req. 20
+    # Return StudentAnswer object
+    def viewStudentAnswer(self, studentID, subCode, examDate, examCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('view_student_answer', [studentID, subCode, examDate, examCode])
+            examItem = [StudentAnswerItem(*item) for result in cursor.stored_results() for item in result]
+            exam = StudentAnswerView(examItem)
+            cursor.close()
+            return exam
+
+    # Data req. 21
+    # Return MarkInExam object
+    def viewMarkInExam(self, studentID, subCode, examDate, examCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('view_mark_in_exam', [subCode, examDate, examCode, studentID])
+            markList = [MarkInExam(*item) for result in cursor.stored_results() for item in result]
+            mark = markList[0]
+            cursor.close()
+            return mark
+
+    # Data req. 22
+    # Return list MarkInExam object
+    def viewMarkInAllExam(self, studentID, examDate):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('view_mark_in_all_exams', [examDate, studentID])
+            markList = [MarkInExam(*item) for result in cursor.stored_results() for item in result]
+            print(cursor)
+            cursor.close()
+            return markList
+
+    # Data req. 24
+    # Print "Note on exam successfully" if note successfully
+    def noteOnExam(self, studentID, subCode, examDate, examCode, answerNumber, studentNote):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('note_on_exam', [studentID, subCode, examDate, examCode, answerNumber, studentNote])
+            cursor.close()
+
+    def __del__(self):
+        self.connection.close()
+
+if __name__ == "__main__":
+    newUtils = studentUtils()
+    # not working ???
+    exam = newUtils.noteOnExam('SV1810812', 'CO2017', '2020-03-15', '2001', 1, 'This is very hard exam.')
+
+
+
+

@@ -95,9 +95,7 @@ class StudentAnswerView:
 
 @dataclass
 class MarkInExam:
-    Stud_Id: str
     In_Sub_Code: str
-    In_Exam_Date: str
     In_Exam_Code: str
     Mark: float
 

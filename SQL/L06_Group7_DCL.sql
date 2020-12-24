@@ -6,8 +6,6 @@ CREATE USER 'ManagementLecturer'@'localhost' IDENTIFIED BY 'ManagementLecturer';
 DROP USER IF EXISTS 'Student'@'localhost';
 CREATE USER 'Student'@'localhost' IDENTIFIED BY 'Student';
 
-USE MCQS_EXAMS_BANK;
-GRANT ALL PRIVILEGES ON MCQS_EXAMS_BANK.* TO 'LecturerInCharge'@'localhost';
 -- Role
 DROP ROLE IF EXISTS CRUD_QUESTIONS;
 CREATE ROLE CRUD_QUESTIONS;
@@ -18,6 +16,7 @@ CREATE ROLE build_exam;
 DROP ROLE IF EXISTS PERFORM_EXAM;
 CREATE ROLE PERFORM_EXAM;
 
+USE MCQS_EXAMS_BANK;
 -- Privileges
 ## 1
 GRANT EXECUTE ON PROCEDURE add_question_4_choices TO CRUD_QUESTIONS;
@@ -53,8 +52,8 @@ GRANT EXECUTE ON PROCEDURE view_doing_right_wrong_students TO 'LecturerInCharge'
 GRANT EXECUTE ON PROCEDURE view_doing_right_wrong_students TO 'ManagementLecturer'@'localhost';
 
 ## 8
--- GRANT EXECUTE ON PROCEDURE view_ratio_doing_right_studs TO 'LecturerInCharge'@'localhost';
--- GRANT EXECUTE ON PROCEDURE view_ratio_doing_right_studs TO 'ManagementLecturer'@'localhost';
+GRANT EXECUTE ON PROCEDURE view_ratio_doing_right_studs TO 'LecturerInCharge'@'localhost';
+GRANT EXECUTE ON PROCEDURE view_ratio_doing_right_studs TO 'ManagementLecturer'@'localhost';
 
 ## 9
 GRANT EXECUTE ON PROCEDURE view_5_ques_max_studs_doing_wrong TO 'LecturerInCharge'@'localhost';
@@ -87,6 +86,7 @@ GRANT EXECUTE ON PROCEDURE view_sub_max_num_oc_min_ratio_stud_doing_right TO 'Ma
 ## 17
 GRANT EXECUTE ON PROCEDURE add_one_answer TO PERFORM_EXAM;
 GRANT EXECUTE ON PROCEDURE add_student_task TO PERFORM_EXAM;
+GRANT EXECUTE ON PROCEDURE set_student_mark TO PERFORM_EXAM;
 GRANT PERFORM_EXAM TO 'Student'@'localhost';
 
 ## 18

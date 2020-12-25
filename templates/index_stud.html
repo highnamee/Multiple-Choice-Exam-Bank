@@ -61,11 +61,10 @@
 						<li class="nav-item"><a class="nav-link" href="/">Bach Khoa</a></li>
 						<li class="nav-item active"><a class="nav-link" href="/">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/mcq">Câu hỏi trắc nghiệm</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/exam">Đề thi</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/mcq">Xin chào {{username}}</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-                        <li><a href="{{ url_for('login') }}" class="hover-btn-new"><span>Đăng nhập</span></a></li>
+                        <li><a href="{{ url_for('logout') }}" class="hover-btn-new"><span>Đăng xuất</span></a></li>
                     </ul>
 				</div>
 			</div>

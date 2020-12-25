@@ -54,6 +54,11 @@ def login():
             error = 'Invalid credentials'
     return render_template('login.html', error=error)
 
+@app.route('/logout')
+def logout():
+    session["accountState"] = None
+    return redirect(url_for('index'))
+
 @app.route('/lec')
 def index_lec():
     return render_template('index_lec.html', session=session)
@@ -65,7 +70,7 @@ def index_stud():
     today = date.today()
     incomingExam = list(filter(lambda x: x[2] >= today, examList))
     passedExam = list(filter(lambda x: x[2] <= today, examList))
-    return render_template('index_stud.html', incomingExam = incomingExam, passedExam = passedExam)
+    return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam)
 
 if __name__ == '__main__':
     app.run(debug=True)

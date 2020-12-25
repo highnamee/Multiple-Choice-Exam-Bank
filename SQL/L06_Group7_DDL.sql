@@ -47,7 +47,6 @@ CREATE TABLE MANAGEMENT_LECTURER (
 
 CREATE TABLE LECTURER_IN_CHARGE (
 	Lecturer_ID VARCHAR(9),
-	Role ENUM('Chính','Phụ') NOT NULL,
 	PRIMARY KEY (Lecturer_ID),
 	FOREIGN KEY (Lecturer_ID) REFERENCES LECTURER (Lecturer_ID)
 );
@@ -158,12 +157,6 @@ ADD COLUMN Mgr_Lecturer_ID VARCHAR(9) NOT NULL;
 ALTER TABLE SUBJECT
 ADD FOREIGN KEY (Mgr_Lecturer_ID) REFERENCES MANAGEMENT_LECTURER (Lecturer_ID);
 
-ALTER TABLE LECTURER_IN_CHARGE
-ADD COLUMN Inchr_Subject_Code CHAR(6);
-
-ALTER TABLE LECTURER_IN_CHARGE
-ADD FOREIGN KEY (Inchr_Subject_Code) REFERENCES SUBJECT (Subject_Code);
-
 ALTER TABLE QUESTION 
 ADD COLUMN Ctrb_Lecturer_ID VARCHAR(9) NOT NULL;
 
@@ -263,3 +256,20 @@ CREATE TABLE HAS_FILE (
 
 ALTER TABLE EXAM
 ADD CONSTRAINT CHECK (Date_Of_Confirmation <= Date_Of_Approval AND Date_Of_Approval <= Exam_Date - 3);
+
+CREATE TABLE LEC_INCHARGE_SUB (
+	Inchr_Lecturer_ID VARCHAR(9),
+    Inchr_Subject_Code CHAR(6),
+    Role ENUM('Chính','Phụ') NOT NULL,
+    PRIMARY KEY (Inchr_Lecturer_ID, Inchr_Subject_Code),
+    FOREIGN KEY (Inchr_Lecturer_ID) REFERENCES LECTURER_IN_CHARGE (Lecturer_ID),
+    FOREIGN KEY (Inchr_Subject_Code) REFERENCES SUBJECT (Subject_Code)
+);
+
+CREATE TABLE LEARN_SUB (
+	Student_ID VARCHAR(9),
+    Learn_Subject_Code CHAR(6),
+    PRIMARY KEY (Student_ID, Learn_Subject_Code),
+    FOREIGN KEY (Student_ID) REFERENCES STUDENT (Student_ID),
+    FOREIGN KEY (Learn_Subject_Code) REFERENCES SUBJECT (Subject_Code)
+);

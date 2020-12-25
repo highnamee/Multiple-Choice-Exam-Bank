@@ -28,13 +28,19 @@ INSERT INTO SUBJECT
 VALUES ('CO2017', 'Hệ điều hành', 'GV333333');
 
 INSERT INTO LECTURER_IN_CHARGE
-VALUES ('GV444444', 'Phụ', 'IM3001');
+VALUES ('GV444444');
 INSERT INTO LECTURER_IN_CHARGE
-VALUES ('GV123456', 'Chính', 'IM3001');
+VALUES ('GV123456');
 INSERT INTO LECTURER_IN_CHARGE
-VALUES ('GV222222', 'Chính', 'CO2017');
+VALUES ('GV222222');
 INSERT INTO LECTURER_IN_CHARGE
-VALUES ('GV987654', 'Phụ', 'CO2017');
+VALUES ('GV987654');
+
+INSERT INTO LEC_INCHARGE_SUB
+VALUES 	('GV444444', 'IM3001', 'Phụ'),
+	('GV123456', 'IM3001', 'Chính'),
+        ('GV222222', 'CO2017', 'Chính'),
+        ('GV987654', 'CO2017', 'Phụ');
 
 INSERT INTO OUTCOME 
 VALUES ('CO2017', 'L.O.1', 'Mô tả cách ứng dụng các kiến thức nền tảng của máy tính và toán học trong hệ điều hành', NULL, NULL);
@@ -64,6 +70,27 @@ INSERT INTO QUESTION
 VALUES ('002CO2017', 'Tại phút 55, hình nào sau đây thể hiện bộ nhớ máy tính? Chú ý: bộ nhớ đang được sử dụng sẽ có màu xám.', 'Trung bình', 4, 'A', NULL, 'GV222222', '2019-02-20 23:00', 'L.O.1.2', 'CO2017');
 INSERT INTO QUESTION
 VALUES ('003CO2017', 'Một job thứ 6 đến ở phút 55, kết thúc tại phút 70 và yêu cầu 25KB bộ nhớ. Hệ điều hành có vùng bộ nhớ rảnh để cấp phát cho job này không?', 'Trung bình', 4, 'D', NULL, 'GV987654', '2019-02-20 23:00', 'L.O.1.2', 'CO2017');
+INSERT INTO QUESTION
+VALUES ('004CO2017', 'Trong các giải pháp sau giải pháp nào vi phạm điều kiện “không có hai tiến trình cùng trong miền tranh chấp”?', 'Dễ', 4, 'C', NULL, 'GV987654', '2019-02-21 00:00', 'L.O.1.1', 'CO2017');
+INSERT INTO QUESTION
+VALUES ('005CO2017', 'Trong chiến lược điều phối nào, tiến trình vào trước được cấp CPU trước?', 'Trung bình', 4, 'A', NULL, 'GV987654', '2019-02-21 00:00', 'L.O.1.1', 'CO2017');
+INSERT INTO QUESTION
+VALUES ('006CO2017', 'Đây là câu hỏi thứ 6 trong môn CO2017', 'Khó', 4, 'B', NULL, 'GV222222', '2019-02-21 05:00', 'L.O.1', 'CO2017');
+INSERT INTO QUESTION
+VALUES ('007CO2017', 'Đây là câu hỏi thứ 7 trong môn CO2017', 'Dễ', 4, 'C', NULL, 'GV222222', '2019-02-21 05:00', 'L.O.1.2', 'CO2017');
+INSERT INTO QUESTION
+VALUES ('008CO2017', 'Đây là câu hỏi thứ 8 trong môn CO2017', 'Khó', 4, 'D', NULL, 'GV987654', '2019-02-21 05:00', 'L.O.2', 'CO2017');
+INSERT INTO QUESTION
+VALUES ('001IM3001', 'Đây là câu hỏi thứ 1 trong môn IM3001', 'Dễ', 4, 'A', NULL, 'GV444444', '2019-02-21 05:00', 'L.O.1', 'IM3001');
+INSERT INTO QUESTION
+VALUES ('002IM3001', 'Đây là câu hỏi thứ 2 trong môn IM3001', 'Trung bình', 4, 'B', NULL, 'GV444444', '2019-02-21 05:04', 'L.O.2', 'IM3001');
+INSERT INTO QUESTION
+VALUES ('003IM3001', 'Đây là câu hỏi thứ 3 trong môn IM3001', 'Khó', 4, 'C', NULL, 'GV123456', '2019-02-21 05:04', 'L.O.2', 'IM3001');
+INSERT INTO QUESTION
+VALUES ('004IM3001', 'Đây là câu hỏi thứ 4 trong môn IM3001', 'Trung bình', 4, 'D', NULL, 'GV123456', '2019-02-21 05:13', 'L.O.3', 'IM3001');
+INSERT INTO QUESTION
+VALUES ('005IM3001', 'Đây là câu hỏi thứ 5 trong môn IM3001', 'Khó', 4, 'C', NULL, 'GV444444', '2019-02-21 05:13', 'L.O.1', 'IM3001');
+
 
 UPDATE QUESTION
 SET Correct_Choice_ID = 'ABD', Described_Content_ID = 'D1'
@@ -93,6 +120,86 @@ INSERT INTO CHOICE
 VALUES ('003CO2017', 'C', 'Không', NULL);
 INSERT INTO CHOICE
 VALUES ('003CO2017', 'D', 'Không. Có những khoảng trống (hole) rảnh nhưng kích thước của chúng < 25KB.', NULL);
+INSERT INTO CHOICE
+VALUES ('004CO2017', 'A', 'Chỉ thị TSL', NULL);
+INSERT INTO CHOICE
+VALUES ('004CO2017', 'B', 'Peterson', NULL);
+INSERT INTO CHOICE
+VALUES ('004CO2017', 'C', 'Sử dụng biến cờ hiệu', NULL);
+INSERT INTO CHOICE
+VALUES ('004CO2017', 'D', 'Kiểm tra luân phiên', NULL);
+INSERT INTO CHOICE
+VALUES ('005CO2017', 'A', 'FIFO', NULL);
+INSERT INTO CHOICE
+VALUES ('005CO2017', 'B', 'SJF', NULL);
+INSERT INTO CHOICE
+VALUES ('005CO2017', 'C', 'Round robin', NULL);
+INSERT INTO CHOICE
+VALUES ('005CO2017', 'D', 'Priority', NULL);
+INSERT INTO CHOICE
+VALUES ('006CO2017', 'A', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('006CO2017', 'B', 'Chọn cái này nè', NULL);
+INSERT INTO CHOICE
+VALUES ('006CO2017', 'C', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('006CO2017', 'D', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('007CO2017', 'A', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('007CO2017', 'B', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('007CO2017', 'C', 'Chọn cái này nè', NULL);
+INSERT INTO CHOICE
+VALUES ('007CO2017', 'D', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('008CO2017', 'A', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('008CO2017', 'B', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('008CO2017', 'C', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('008CO2017', 'D', 'Chọn thì chọn không chọn thì chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('001IM3001', 'A', 'Chắc kèo câu này đúng', NULL);
+INSERT INTO CHOICE
+VALUES ('001IM3001', 'B', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('001IM3001', 'C', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('001IM3001', 'D', 'Đừng chọn dùm cám ơn', NULL);
+INSERT INTO CHOICE
+VALUES ('002IM3001', 'A', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('002IM3001', 'B', 'Chọn cái này dùm cám ơn', NULL);
+INSERT INTO CHOICE
+VALUES ('002IM3001', 'C', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('002IM3001', 'D', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('003IM3001', 'A', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('003IM3001', 'B', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('003IM3001', 'C', 'Là người sáng suốt sẽ chọn câu này', NULL);
+INSERT INTO CHOICE
+VALUES ('003IM3001', 'D', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('004IM3001', 'A', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('004IM3001', 'B', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('004IM3001', 'C', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('004IM3001', 'D', 'Pick me pick me pick me up', NULL);
+INSERT INTO CHOICE
+VALUES ('005IM3001', 'A', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('005IM3001', 'B', 'Đừng chọn', NULL);
+INSERT INTO CHOICE
+VALUES ('005IM3001', 'C', '"Câu nào không biết cứ lụi C" - Một thầy giáo nào đó cho biết', NULL);
+INSERT INTO CHOICE
+VALUES ('005IM3001', 'D', 'Đừng chọn', NULL);
 
 UPDATE CHOICE
 SET Described_Content_ID = 'D1'
@@ -133,6 +240,9 @@ VALUES ('SV181012', 'Nguyễn Ngọc Lan', 'Anh', 'CSE', NULL, NULL, NULL);
 UPDATE STUDENT
 SET Student_ID = 'SV1810812'
 WHERE Student_ID = 'SV181012';
+
+INSERT INTO LEARN_SUB 
+VALUES	('SV1810812', 'CO2017');
 
 INSERT INTO ANSWER
 VALUES ('SV1810812', 'CO2017', '2020-03-15', '2001', 1, NULL, NULL);

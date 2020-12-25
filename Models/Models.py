@@ -95,9 +95,7 @@ class StudentAnswerView:
 
 @dataclass
 class MarkInExam:
-    Stud_Id: str
     In_Sub_Code: str
-    In_Exam_Date: str
     In_Exam_Code: str
     Mark: float
 
@@ -167,6 +165,14 @@ class Choice:
     Question_ID: str
     Question_No: str
     Mix_Correct_Choice_IDs: str
+@dataclass
+class NumQuestion:
+    Question_Id: str
+    Content: str
+    Subject_Code: str
+    Exam_Date: str
+    Num_Stud_Right: int
+    Num_Stud_Wrong: int
 
     def __str__(self):
         pass
@@ -219,3 +225,13 @@ class Exam:
 @dataclass
 class Mark:
     pass
+class OutcomeResult:
+    Evl_Outcome_No: str
+    Question_Id: str
+    Subject_Code: str
+    Exam_Date: str
+    Ratio: float
+    Grade: float
+
+    def __str__(self):
+        pass

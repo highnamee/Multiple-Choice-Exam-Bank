@@ -219,9 +219,8 @@ END $$
 DELIMITER ;
 
 -- Test
--- call add_question_to_exam('003CO2017', 'CO2017', '2020-03-15', '2001', 2, 2, 'B');
--- SELECT * 
--- FROM In_exam natural join Choice_Mapping;
+-- CALL add_question_to_exam('002CO2017', 'CO2017', '2020-03-15', '2001', 2, 2, 'B');
+-- SELECT * FROM In_exam NATURAL JOIN Choice_Mapping;
 
 -- Procedure build exam
 -- Input: Subject_Code CHAR(6), Exam_Date DATE, Exam_Code CHAR(4), Date_Of_Confirmation DATE
@@ -237,8 +236,8 @@ END $$
 DELIMITER ;
 
 -- Test
--- call confirm_exam('CO2017','2020-01-01','2012','2019-01-12');
--- select * from exam natural join exam_time;
+-- CALL confirm_exam('CO2017','2020-01-01','2012','2019-01-12');
+-- SELECT * FROM exam NATURAL JOIN exam_time;
 
 /*
  * 3. View an exam for LECTURER_IN_CHARGE and MANAGEMENT_LECTURER
@@ -282,39 +281,61 @@ DELIMITER ;
 -- CALL view_exam('CO2017', '2020-03-15');
 
 /* 
- * 4 
+ * 4. View list of students that perform at exam time of subject
  */
 DROP PROCEDURE IF EXISTS view_amount_of_stud;
 DELIMITER $$
-CREATE PROCEDURE view_amount_of_stud(IN In_Sub_Code CHAR(6), IN In_Exam_Date DATE, IN In_Exam_Code CHAR(4))
+CREATE PROCEDURE view_amount_of_stud (IN In_Sub_Code CHAR(6), In_Exam_Date DATE)
 BEGIN
-SELECT Student_ID, Last_Name, First_Name, Faculty, Address, Email, Phone
-FROM student
-WHERE Student_ID IN
-(
-SELECT Student_ID
-FROM answer
-WHERE Subject_Code=In_Sub_Code AND In_Exam_Date=Exam_Date AND In_Exam_Code=Exam_Code
-);
+	SELECT Student_ID, Last_Name, First_Name
+	FROM STUDENT
+	WHERE Student_ID IN
+		(SELECT Student_ID FROM ANSWER
+		WHERE Subject_Code = In_Sub_Code AND In_Exam_Date = Exam_Date)
+	ORDER BY First_Name, Last_Name;
 END $$
 DELIMITER ;
 
--- CALL view_amount_of_stud('CO2017', '2020-03-15', '2001');
+-- Test
+-- CALL view_amount_of_stud ('CO2017', '2020-03-15');
 
 /*
- * 5 
+ * 5. View result of student's answer that performs at exam time of subject
  */
+
+DROP VIEW IF EXISTS RESULT_STUDENT_ANSWER;
+CREATE VIEW RESULT_STUDENT_ANSWER AS
+SELECT ine.Subject_Code, Name AS Subject_Name, ine.Exam_Date, ine.Exam_Code, Lecturer_Note, CDescription, DFile_Path, 
+		Question_No, QContent, QFile_Path, Evl_Outcome_No, Choice_ID, Choice_Content, CFile_Path, Mix_Correct_Choice_IDs,
+        Student_ID, Answer_Choice_IDs, Check_Sol
+    FROM
+		(SELECT * FROM (EXAM NATURAL JOIN SUBJECT) NATURAL JOIN IN_EXAM 
+        NATURAL JOIN 
+		(SELECT CDescription, DFile_Path, q.Question_ID, QContent, QFile_Path, Evl_Outcome_No, Choice_ID, Choice_Content, c.File_Path AS CFile_Path 
+		FROM
+				(SELECT CDescription, des.File_Path AS DFile_Path, Question_ID, Content AS QContent, q.File_Path AS QFile_Path, Evl_Outcome_No 
+				FROM 
+					(SELECT * FROM (QUESTION NATURAL LEFT JOIN HAS_FILE) NATURAL LEFT JOIN USE_DES) q 
+					LEFT JOIN (SELECT * FROM COMMON_DESCRIPTION NATURAL LEFT JOIN HAS_FILE) des 
+					ON q.Description_ID = des.Description_ID) q
+			LEFT JOIN
+				(SELECT Question_ID, Mapping_Choice_ID AS Choice_ID, Choice_Content, File_Path 
+                FROM CHOICE NATURAL LEFT JOIN HAS_FILE NATURAL LEFT JOIN CHOICE_MAPPING) c
+			ON c.Question_ID = q.Question_ID) qd) AS ine
+		JOIN ANSWER_CONTENT ac
+        ON ine.Subject_Code = ac.Subject_Code AND ine.Exam_Date = ac.Exam_Date AND ine.Exam_Code = ac.Exam_Code AND Answer_No = Question_No;  
+ 
 DROP PROCEDURE IF EXISTS view_ans_content_of_stud;
 DELIMITER $$
-CREATE PROCEDURE view_ans_content_of_stud(IN In_Sub_Code CHAR(6), IN In_Exam_Date DATE, IN In_Exam_Code CHAR(4), IN Stud_Id VARCHAR(9))
+CREATE PROCEDURE view_ans_content_of_stud(IN In_Sub_Code CHAR(6), n_Exam_Date DATE, In_Exam_Code CHAR(4), Stud_Id VARCHAR(9))
 BEGIN
-select Student_ID,Subject_Code,Exam_Date,Exam_Code,Answer_number, Answer_no, Answer_Choice_IDs
-from answer_content
-where Student_ID =Stud_Id and Subject_Code=In_Sub_Code and Exam_Date=In_Exam_Date and Exam_Code=In_Exam_Code;
+	SELECT * FROM RESULT_STUDENT_ANSWER
+    ORDER BY Question_No, Choice_ID;
 END $$
 DELIMITER ;
 
--- CALL view_ans_content_of_stud('CO2017', '2020-03-15', '2001','SV1810812');
+-- Test
+-- CALL view_ans_content_of_stud ('CO2017', '2020-03-15', '2001', 'SV1810812');
 
 /*
  * 6. View mark of students that perform at exam time of subject
@@ -323,10 +344,10 @@ DROP PROCEDURE IF EXISTS view_all_students_mark;
 DELIMITER $$
 CREATE PROCEDURE view_all_students_mark (IN In_Sub_Code CHAR(6), IN In_Exam_Date DATE)
 BEGIN
-	SELECT Student_Id, subject_code,exam_Date, exam_code, mark
+	SELECT Subject_Code, Exam_Date, Exam_Code, Student_ID, Mark
 	FROM ANSWER
-	WHERE subject_code=in_sub_code AND exam_date = in_exam_date
-	GROUP BY student_id;
+	WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date
+	GROUP BY Student_ID;
 END $$
 DELIMITER ;
 
@@ -340,24 +361,96 @@ DROP PROCEDURE IF EXISTS view_doing_right_wrong_students;
 DELIMITER $$
 CREATE PROCEDURE view_doing_right_wrong_students (IN In_Sub_Code CHAR(6), IN In_Exam_Date DATE, IN Ques_Id VARCHAR(9))
 BEGIN
-	DECLARE num_of_right INT DEFAULT 0;
-	DECLARE num_of_wrong INT DEFAULT 0;
-	select count(*) into num_of_right
-	FROM (((Answer NATURAL JOIN In_Exam) NATURAL JOIN Answer_Content) NATURAL JOIN QUESTION)
-				WHERE Question_No = Answer_No AND Answer_Choice_IDs = Mix_Correct_Choice_IDs
-					  AND Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date and question_id=ques_id;
-	select count(*) into num_of_wrong
-	FROM (((Answer NATURAL JOIN In_Exam) NATURAL JOIN Answer_Content) NATURAL JOIN QUESTION)
-				WHERE Question_No = Answer_No AND Answer_Choice_IDs <> Mix_Correct_Choice_IDs
-					  AND Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date and question_id=ques_id;
-					  
-	select Ques_Id, num_of_right, num_of_wrong
-	from (((Answer NATURAL JOIN In_Exam) NATURAL JOIN Answer_Content) NATURAL JOIN QUESTION)
-	GROUP BY QUES_id;
+	DECLARE num_studs_doing_right INT DEFAULT 0;
+	DECLARE num_studs_doing_wrong INT DEFAULT 0;
+    
+    SELECT COUNT(Student_ID) INTO num_studs_doing_right
+    FROM ANSWER_CONTENT NATURAL JOIN IN_EXAM
+    WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Question_No = Answer_No
+		AND Question_ID = Ques_Id AND Check_Sol = 'Chính xác';
+	SELECT COUNT(Student_ID) INTO num_studs_doing_wrong
+    FROM ANSWER_CONTENT NATURAL JOIN IN_EXAM
+    WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Question_No = Answer_No
+		AND Question_ID = Ques_Id AND Check_Sol = 'Không chính xác';
+			
+	SELECT num_studs_doing_right AS Number_Of_Students_Doing_Right, num_studs_doing_wrong AS Number_Of_Students_Doing_Wrong;
 END $$
 DELIMITER ;
 
--- CALL view_doing_right_wrong_students ('IM3001', '2020-03-15','002CO2017');
+-- Test
+-- CALL view_doing_right_wrong_students ('CO2017', '2020-03-15', '001CO2017');
+-- CALL view_doing_right_wrong_students ('CO2017', '2020-03-15', '002CO2017');
+
+/*
+ * 8. View the ratio of number of students doing right/total students for each outcome that evaluated by questions at exam time
+ */
+
+DROP PROCEDURE IF EXISTS view_ratio_doing_right_studs;
+DELIMITER $$
+CREATE PROCEDURE view_ratio_doing_right_studs (IN SubCode CHAR(6), ExamDate DATE)
+BEGIN
+    SELECT Evl_Outcome_No, (Num_Ans_Right_Studs / Total_Studs)*100 AS Ratio FROM
+		(SELECT Evl_Outcome_No, Total_Studs, IF (Num_Ans_Right_Studs IS NULL, 0, Num_Ans_Right_Studs) AS Num_Ans_Right_Studs
+		FROM 
+			(SELECT Evl_Outcome_No, COUNT(Student_ID) AS Total_Studs
+			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
+					WHERE Subject_Code = SubCode AND Exam_Date = ExamDate
+					GROUP BY Subject_Code, Exam_Date, Exam_Code, Student_ID, Question_No) sta
+			GROUP BY Evl_Outcome_No) total
+			NATURAL LEFT JOIN
+			(SELECT Evl_Outcome_No, COUNT(Student_ID) AS Num_Ans_Right_Studs
+			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
+					WHERE Subject_Code = SubCode AND Exam_Date = ExamDate
+					GROUP BY Subject_Code, Exam_Date, Exam_Code, Student_ID, Question_No) sta
+			WHERE Check_Sol = 'Chính xác'
+			GROUP BY Evl_Outcome_No) correct) nt;
+END $$
+DELIMITER ;
+
+-- CALL view_ratio_doing_right_studs ('CO2017', '2020-03-15');
+
+/*
+ * 9. View 5 questions that have maximum number of students doing wrong at exam time
+ */
+
+DROP PROCEDURE IF EXISTS view_5_ques_max_studs_doing_wrong;
+DELIMITER $$
+CREATE PROCEDURE view_5_ques_max_studs_doing_wrong (IN In_Sub_Code CHAR(6), In_Exam_Date DATE)
+BEGIN
+	SELECT Question_ID, Content, COUNT(Student_ID) AS Number_Of_Students_Doing_Wrong
+    FROM ANSWER_CONTENT NATURAL JOIN IN_EXAM NATURAL JOIN (SELECT Question_ID, Content FROM QUESTION) q
+    WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Question_No = Answer_No AND Check_Sol = 'Không chính xác'
+    GROUP BY Question_ID
+    ORDER BY Number_Of_Students_Doing_Wrong DESC
+    LIMIT 5;
+END $$
+DELIMITER ;
+
+-- Test
+-- CALL view_5_ques_max_studs_doing_wrong ('CO2017', '2020-03-15');
+
+/*
+ * 10. View all questions that have maximum number of students doing wrong at all exam time of one subject
+ */
+
+DROP PROCEDURE IF EXISTS view_all_quess_max_studs_doing_wrong;
+DELIMITER $$
+CREATE PROCEDURE view_all_quess_max_studs_doing_wrong (IN In_Sub_Code CHAR(6))
+BEGIN
+	SELECT Question_ID, Content
+    FROM ANSWER_CONTENT NATURAL JOIN IN_EXAM NATURAL JOIN (SELECT Question_ID, Content FROM QUESTION) q
+    WHERE Subject_Code = In_Sub_Code AND Question_No = Answer_No AND Check_Sol = 'Không chính xác'
+    GROUP BY Question_ID
+    HAVING COUNT(Student_ID) = (SELECT MAX(num_studs_doing_wrong)
+								FROM 	(SELECT COUNT(Student_ID) AS num_studs_doing_wrong
+										FROM ANSWER_CONTENT NATURAL JOIN IN_EXAM 
+										WHERE Subject_Code = In_Sub_Code AND Question_No = Answer_No AND Check_Sol = 'Không chính xác'
+										GROUP BY Question_ID) nsdw);
+END $$
+DELIMITER ;
+
+-- Test
+-- CALL view_all_quess_max_studs_doing_wrong ('CO2017');
 
 /*
  * 11. View lowest grade outcome on one exam for LECTURER_IN_CHARGE and MANAGEMENT_LECTURER
@@ -464,7 +557,7 @@ DELIMITER ;
 /* 
  * 13. Approve required exams of one subject at exam time
  */
--- Procedure approve exam
+-- Procedure: approve_exam
 -- Input: Subject_Code CHAR(6), Exam_Date DATE, Exam_Code CHAR(4), Apr_Lecturer_ID VARCHAR(9)
 -- TO DO: Check constraint Exam_time has at least 2 exams. If satisfied, update Apr_Lecturer_ID and Date_Of_Approval
 
@@ -496,10 +589,107 @@ DELIMITER ;
 -- CALL approve_exam('CO2017','2020-01-01','2012','GV333333','2019-02-12');
 -- SELECT * FROM exam NATURAL JOIN exam_time;
 
-#################################################################
+########################################################################
 # 14. View all subjects that have minimum GPA at semester of school year
-# User: Student
-#################################################################
+# User: ManagementLecturer
+########################################################################
+
+DROP PROCEDURE IF EXISTS view_min_gpa_subject;
+DELIMITER //
+CREATE PROCEDURE view_min_gpa_subject (IN From_Date DATE, To_Date DATE)
+BEGIN
+	SELECT Subject_Code, Name AS Subject_Name, AVG(Mark) AS GPA
+    FROM ANSWER NATURAL JOIN SUBJECT 
+    WHERE Exam_Date BETWEEN From_Date AND To_Date 
+    GROUP BY Subject_Code
+    HAVING AVG(Mark) = (SELECT MIN(gpa)
+						FROM 	(SELECT AVG(Mark) AS gpa FROM ANSWER 
+                                WHERE Exam_Date BETWEEN From_Date AND To_Date 
+								GROUP BY Subject_Code) gs);
+END //
+DELIMITER ;
+
+-- Test
+-- CALL view_min_gpa_subject ('2020-02-01', '2020-06-01');
+
+####################################################################################
+# 15. View all subjects that have minimum GPA at 3 latest exam time of each subject
+# User: ManagementLecturer
+####################################################################################
+
+DROP PROCEDURE IF EXISTS view_min_gpa_subject_3_lastest_exam_time;
+DELIMITER //
+CREATE PROCEDURE view_min_gpa_subject_3_lastest_exam_time ()
+BEGIN
+	DROP VIEW IF EXISTS GPA_IN_EXAM_TIME;
+    ## calculate gpa in each exam time of each subject ##
+	CREATE VIEW GPA_IN_EXAM_TIME AS 
+	SELECT Subject_Code, Name AS Subject_Name, Exam_Date, AVG(Mark) AS GPA
+    FROM ANSWER NATURAL JOIN SUBJECT 
+    GROUP BY Subject_Code, Exam_Date;
+   
+	SELECT Subject_Code, Subject_Name FROM GPA_IN_EXAM_TIME g
+    GROUP BY Subject_Code
+    HAVING (SELECT COUNT(*) FROM
+				(SELECT * FROM (SELECT * FROM GPA_IN_EXAM_TIME g1
+				WHERE g1.Subject_Code = g.Subject_Code
+				ORDER BY Exam_Date DESC
+				LIMIT 3) AS by_date
+				UNION
+				SELECT * FROM (SELECT * FROM GPA_IN_EXAM_TIME g2
+                WHERE g2.Subject_Code = g.Subject_Code
+                ORDER BY GPA ASC
+                LIMIT 3) AS by_gpa) AS cmp
+			) = 0;
+END //
+DELIMITER ;
+
+-- Test
+-- CALL view_min_gpa_subject_3_lastest_exam_time ();
+
+#######################################################################################
+# 16. View all subjects that have maximum number of outcomes that have minimum ratio of 
+# number of students doing right/total students at exam time
+# User: ManagementLecturer
+#######################################################################################
+
+DROP VIEW IF EXISTS RATIO_STUD_DOING_RIGHT;
+CREATE VIEW RATIO_STUD_DOING_RIGHT AS
+SELECT Subject_Code, Exam_Date, Evl_Outcome_No, (Num_Ans_Right_Studs / Total_Studs)*100 AS Ratio FROM
+		(SELECT Subject_Code, Exam_Date, Evl_Outcome_No, Total_Studs, IF (Num_Ans_Right_Studs IS NULL, 0, Num_Ans_Right_Studs) AS Num_Ans_Right_Studs
+		FROM 
+			(SELECT Subject_Code, Exam_Date, Evl_Outcome_No, COUNT(Student_ID) AS Total_Studs
+			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
+					GROUP BY Subject_Code, Exam_Date, Exam_Code, Student_ID, Question_No) sta
+			GROUP BY Subject_Code, Exam_Date, Evl_Outcome_No) total
+			NATURAL LEFT JOIN
+			(SELECT Subject_Code, Exam_Date, Evl_Outcome_No, COUNT(Student_ID) AS Num_Ans_Right_Studs
+			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
+					GROUP BY Subject_Code, Exam_Date, Exam_Code, Student_ID, Question_No) sta
+			WHERE Check_Sol = 'Chính xác'
+			GROUP BY Subject_Code, Exam_Date, Evl_Outcome_No) correct) nt;
+
+-- Procedure: view_sub_max_num_oc_min_ratio_stud_doing_right
+DROP PROCEDURE IF EXISTS view_sub_max_num_oc_min_ratio_stud_doing_right;
+DELIMITER //
+CREATE PROCEDURE view_sub_max_num_oc_min_ratio_stud_doing_right (IN From_Date DATE, To_Date DATE)
+BEGIN
+	DROP VIEW IF EXISTS NUM_OC_MIN_RATIO;
+	CREATE VIEW NUM_OC_MIN_RATIO AS
+	SELECT Subject_Code, Exam_Date, COUNT(Evl_Outcome_No) AS Number_Of_Outcomes_Have_Min_Ratio, Ratio 
+    FROM RATIO_STUD_DOING_RIGHT r1
+    GROUP BY Subject_Code, Exam_Date, Evl_Outcome_No
+    HAVING Ratio = (SELECT MIN(Ratio) FROM RATIO_STUD_DOING_RIGHT r2
+                    WHERE r1.Subject_Code = r2.Subject_Code AND r1.Exam_Date = r2.Exam_Date);
+	SELECT * FROM NUM_OC_MIN_RATIO
+    WHERE (Exam_Date BETWEEN From_Date AND To_Date)
+		AND Number_Of_Outcomes_Have_Min_Ratio = (SELECT MAX(Number_Of_Outcomes_Have_Min_Ratio) FROM NUM_OC_MIN_RATIO
+												WHERE Exam_Date BETWEEN From_Date AND To_Date);
+END //
+DELIMITER ;
+
+-- Test
+-- CALL view_sub_max_num_oc_min_ratio_stud_doing_right ('2020-03-10', '2020-03-20');
 
 #################################################################
 # 17. Perform an exam of subject at exam time/semester/school year
@@ -512,8 +702,19 @@ DROP PROCEDURE IF EXISTS add_one_answer;
 DELIMITER //
 CREATE PROCEDURE add_one_answer (IN StudentID VARCHAR(9), SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4), AnsNum INT, AnsNo INT, AnsChoiceIDs VARCHAR(5))
 BEGIN
+	DECLARE CheckSol ENUM ('Không chính xác', 'Chính xác', 'Không hoàn thành');
+    DECLARE CorrectChoiceIDs VARCHAR(5);
+    SELECT Mix_Correct_Choice_IDs INTO CorrectChoiceIDs FROM IN_EXAM
+    WHERE Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode AND Question_No = AnsNo;
+    IF AnsChoiceIDs IS NULL THEN
+		SET CheckSol = 'Không hoàn thành';
+	ELSEIF AnsChoiceIDs = CorrectChoiceIDs THEN
+		SET CheckSol = 'Chính xác';
+	ELSE
+		SET CheckSol = 'Không chính xác';
+    END IF;
 	INSERT INTO ANSWER_CONTENT
-    VALUES (StudentID, SubCode, ExamDate, ExamCode, AnsNum, AnsNo, AnsChoiceIDs);
+    VALUES (StudentID, SubCode, ExamDate, ExamCode, AnsNum, AnsNo, AnsChoiceIDs, CheckSol);
 END //
 DELIMITER ;
 
@@ -521,13 +722,52 @@ DELIMITER ;
 -- TO DO: insert student task into ANSWER (include NumCorrectAns and Mark which are calculated in application after student submit)
 DROP PROCEDURE IF EXISTS add_student_task;
 DELIMITER //
-CREATE PROCEDURE add_student_task (IN StudentID VARCHAR(9), SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4),
-	AnsNum INT, NumCorrectAns INT, Mark DECIMAL(2,2))
+CREATE PROCEDURE add_student_task (IN StudentID VARCHAR(9), SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4), AnsNum INT)
 BEGIN
 	INSERT INTO ANSWER
-    VALUES (StudentID, SubCode, ExamDate, ExamCode, AnsNum, NULL, NumCorrectAns, Mark);
+    VALUES (StudentID, SubCode, ExamDate, ExamCode, AnsNum, NULL, NULL);
 END //
 DELIMITER ;
+
+-- FUNCTION: calculate_mark
+-- TO DO: calculate mark of student answer in an exam at exam time
+DROP FUNCTION IF EXISTS calculate_mark;
+DELIMITER //
+CREATE FUNCTION calculate_mark (In_Sub_Code CHAR(6), In_Exam_Date DATE, In_Exam_Code CHAR(4), Stud_Id VARCHAR(9))
+RETURNS DECIMAL(5,2)
+DETERMINISTIC
+BEGIN
+	DECLARE num_of_ques INT DEFAULT 0;
+	DECLARE num_of_correct_ans INT DEFAULT 0;
+    DECLARE mark DECIMAL(5,2);
+    
+    SELECT COUNT(*) INTO num_of_ques FROM ANSWER_CONTENT
+	WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Exam_Code = In_Exam_Code AND Student_ID = Stud_Id;
+    SELECT COUNT(*) INTO num_of_correct_ans FROM ANSWER_CONTENT
+	WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Exam_Code = In_Exam_Code AND Student_ID = Stud_Id AND Check_Sol = 'Chính xác';
+	
+    SET mark = (num_of_correct_ans / num_of_ques) * 10;
+    RETURN mark;
+END //
+DELIMITER ;
+
+-- Test
+-- SELECT calculate_mark ('CO2017', '2020-03-15', '2001','SV1810812');
+
+-- PROCEDURE: set_student_mark
+-- TO DO: set mark of student answer after insert, calculated by FUNCTION calculate_mark
+DROP PROCEDURE IF EXISTS set_student_mark;
+DELIMITER //
+CREATE PROCEDURE set_student_mark (IN SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4), StudentID VARCHAR(9), AnsNum INT)
+BEGIN
+	UPDATE ANSWER
+    SET Mark = calculate_mark(SubCode, ExamDate, ExamCode, StudentID)
+    WHERE Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode AND Student_ID = StudentID;
+END //
+DELIMITER ;
+
+-- Test
+-- CALL set_student_mark ('CO2017', '2020-03-15', '2001', 'SV1810812', 1);
 
 ############################################
 # 18. View one exam of subject at exam time
@@ -551,8 +791,7 @@ SELECT Subject_Code, Name AS Subject_Name, Exam_Date, Exam_Code, Lecturer_Note, 
 			LEFT JOIN
 				(SELECT Question_ID, Mapping_Choice_ID AS Choice_ID, Choice_Content, File_Path 
                 FROM CHOICE NATURAL LEFT JOIN HAS_FILE NATURAL LEFT JOIN CHOICE_MAPPING) c
-			ON c.Question_ID = q.Question_ID) qd
-	ORDER BY Question_No, Choice_ID;  
+			ON c.Question_ID = q.Question_ID) qd;
     
 -- PROCEDURE: view_performed_exam
 -- TO DO: select view EXAM_SOLUTION by SubCode, ExamDate, ExamCode
@@ -562,7 +801,8 @@ CREATE PROCEDURE view_performed_exam (IN SubCode CHAR(6), ExamDate DATE, ExamCod
 BEGIN
       SELECT Subject_Code, Subject_Name, Exam_Date, Exam_Code, Lecturer_Note, CDescription, DFile_Path, 
 		Question_No, QContent, QFile_Path, Evl_Outcome_No, Choice_ID, Choice_Content, CFile_Path FROM EXAM_SOLUTION
-      WHERE Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode;
+      WHERE Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
+      ORDER BY Question_No, Choice_ID;
 END //
 DELIMITER ;
 
@@ -581,7 +821,8 @@ DELIMITER //
 CREATE PROCEDURE view_exam_with_solution (IN SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4))
 BEGIN
       SELECT * FROM EXAM_SOLUTION
-      WHERE Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode;
+      WHERE Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
+      ORDER BY Question_No, Choice_ID;
 END //
 DELIMITER ;
 
@@ -596,8 +837,7 @@ DELIMITER ;
 DROP VIEW IF EXISTS STUDENT_ANSWER;
 CREATE VIEW STUDENT_ANSWER AS
 SELECT ine.Subject_Code, Name AS Subject_Name, ine.Exam_Date, ine.Exam_Code, Lecturer_Note, CDescription, DFile_Path, 
-		Question_No, QContent, QFile_Path, Evl_Outcome_No, Choice_ID, Choice_Content, CFile_Path, Mix_Correct_Choice_IDs,
-        Student_ID, Answer_Choice_IDs, Check_Sol
+		Question_No, QContent, QFile_Path, Evl_Outcome_No, Choice_ID, Choice_Content, CFile_Path, Student_ID, Answer_Choice_IDs
     FROM
 		(SELECT * FROM (EXAM NATURAL JOIN SUBJECT) NATURAL JOIN IN_EXAM 
         NATURAL JOIN 
@@ -613,8 +853,7 @@ SELECT ine.Subject_Code, Name AS Subject_Name, ine.Exam_Date, ine.Exam_Code, Lec
                 FROM CHOICE NATURAL LEFT JOIN HAS_FILE NATURAL LEFT JOIN CHOICE_MAPPING) c
 			ON c.Question_ID = q.Question_ID) qd) AS ine
 		JOIN ANSWER_CONTENT ac
-        ON ine.Subject_Code = ac.Subject_Code AND ine.Exam_Date = ac.Exam_Date AND ine.Exam_Code = ac.Exam_Code AND Answer_No = Question_No
-	ORDER BY Question_No, Choice_ID;  
+        ON ine.Subject_Code = ac.Subject_Code AND ine.Exam_Date = ac.Exam_Date AND ine.Exam_Code = ac.Exam_Code AND Answer_No = Question_No;  
   
 -- PROCEDURE: view_student_answer
 -- TO DO: select view STUDENT_ANSWER by StudentID, SubCode, ExamDate, ExamCode
@@ -623,7 +862,8 @@ DELIMITER //
 CREATE PROCEDURE view_student_answer (IN StudentID VARCHAR(9), SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4))
 BEGIN
 	SELECT * FROM STUDENT_ANSWER
-    WHERE Student_ID = StudentID AND Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode;
+    WHERE Student_ID = StudentID AND Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
+    ORDER BY Question_No, Choice_ID;
 END //
 DELIMITER ;
 
@@ -631,25 +871,15 @@ DELIMITER ;
 -- CALL view_student_answer ('SV1810812','CO2017', '2020-03-15', '2001');
 
 /*
- * 21
+ * 21. View self mark in exam of subject at exam time 
  */
+
 DROP PROCEDURE IF EXISTS view_mark_in_exam;
 DELIMITER $$
 CREATE PROCEDURE view_mark_in_exam (IN In_Sub_Code CHAR(6), In_Exam_Date DATE, In_Exam_Code CHAR(4), Stud_Id VARCHAR(9))
 BEGIN
-	DECLARE num_of_ques INT DEFAULT 0;
-	DECLARE num_of_right INT DEFAULT 0;
-	DECLARE mark INT DEFAULT 0;
-	SELECT COUNT(*) INTO num_of_ques
-	FROM ANSWER_CONTENT
-	WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Exam_Code = In_Exam_Code AND Student_ID = Stud_Id;
-
-	SELECT COUNT(*) INTO num_of_right
-	FROM ANSWER_CONTENT NATURAL JOIN IN_EXAM
-	WHERE Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Exam_Code = In_Exam_Code AND Student_ID = Stud_Id 
-		AND mix_correct_choice_ids = answer_choice_ids AND Question_No = Answer_No;
-
-	SELECT Stud_Id, In_Sub_Code, In_Exam_Date, In_Exam_Code, num_of_right/num_of_ques*10 AS Mark;
+	SELECT Mark FROM ANSWER
+    WHERE Student_ID = Stud_ID AND Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Exam_Code = In_Exam_Code;
 END $$
 DELIMITER ;
 
@@ -657,19 +887,19 @@ DELIMITER ;
 CALL view_mark_in_exam('CO2017', '2020-03-15', '2001','SV1810812');
 
 /*
- * 22
+ * 22. View self mark in all exams of all subjects at exam time
  */
 DROP PROCEDURE IF EXISTS view_mark_in_all_exams;
 DELIMITER $$
 CREATE PROCEDURE view_mark_in_all_exams (IN In_Exam_Date DATE, Stud_Id VARCHAR(9))
 BEGIN
-	SELECT Student_ID, Subject_Code, Exam_Date, Exam_Code, Mark FROM ANSWER
+	SELECT Subject_Code, Exam_Code, Mark FROM ANSWER
     WHERE Stud_Id = Student_ID AND Exam_Date = In_Exam_Date;
 END $$
 DELIMITER ;
 
 -- Test
-CALL view_mark_in_all_exams('2020-03-15', 'SV1810812');
+-- CALL view_mark_in_all_exams('2020-03-15', 'SV1810812');
 
 #############################################################################
 # 23. View ratio of number of correct answers/total questions of each outcome 
@@ -683,17 +913,17 @@ DROP PROCEDURE IF EXISTS view_ratio_outcome_in_exam;
 DELIMITER //
 CREATE PROCEDURE view_ratio_outcome_in_exam (IN StudentID VARCHAR(9), SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4))
 BEGIN
-	SELECT Evl_Outcome_No, (Num_Correct_Ans / Total_Ques) * 100 AS Ratio FROM
+	SELECT Evl_Outcome_No, (Num_Correct_Ans / Total_Ques) AS Ratio FROM
 		(SELECT Evl_Outcome_No, Total_Ques, IF (Num_Correct_Ans IS NULL, 0, Num_Correct_Ans) AS Num_Correct_Ans
 		FROM 
 			(SELECT Evl_Outcome_No, COUNT(*) AS Total_Ques
-			FROM	(SELECT * FROM STUDENT_ANSWER 
+			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
 					WHERE Student_ID = StudentID AND Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
 					GROUP BY Question_No) sta
 			GROUP BY Evl_Outcome_No) correct
 			NATURAL LEFT JOIN
 			(SELECT Evl_Outcome_No, COUNT(*) AS Num_Correct_Ans
-			FROM	(SELECT * FROM STUDENT_ANSWER 
+			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
 					WHERE Student_ID = StudentID AND Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
 					GROUP BY Question_No) sta
 			WHERE Check_Sol = 'Chính xác'
@@ -726,5 +956,5 @@ END $$
 DELIMITER ;
 
 -- Test
--- call note_on_exam('SV1810812', 'CO2017', '2020-03-15', '2001', 1, 'This is hard exam.');
+-- CALL note_on_exam('SV1810812', 'CO2017', '2020-03-15', '2001', 1, 'This is hard exam.');
 -- SELECT * FROM answer;

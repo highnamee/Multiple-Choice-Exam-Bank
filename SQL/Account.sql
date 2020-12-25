@@ -35,8 +35,8 @@ INSERT IGNORE INTO STUDENT
 VALUES ('SV181034', 'Võ Hoàng Hải', 'Nam', 'CSE', NULL, NULL, NULL);
 
 INSERT IGNORE INTO studentAccount
-VALUES ('student1', '900150983cd24fb0d6963f7d28e17f72', 'SV181034'),
-	   ('student2', '900150983cd24fb0d6963f7d28e17f72', 'SV181012');
+VALUES ('student1', '900150983cd24fb0d6963f7d28e17f72', 'SV1810340'),
+	   ('student2', '900150983cd24fb0d6963f7d28e17f72', 'SV1810812');
        
 select * from studentAccount;
 select * from lecturerAccount;

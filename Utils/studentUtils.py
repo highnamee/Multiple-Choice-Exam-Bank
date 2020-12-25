@@ -84,6 +84,15 @@ class studentUtils:
             cursor.callproc('note_on_exam', [studentID, subCode, examDate, examCode, answerNumber, studentNote])
             cursor.close()
 
+    # Get data for Incoming/Passed Exam table
+    def getExamOfStudent(self, studentID):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT Subject_Code, Content, Exam_Date FROM LEARN_SUB a JOIN EXAM_TIME b ON a.Semester = b.Semester AND a.Learn_Subject_Code = Subject_Code AND Student_ID = %s;", (studentID,))
+            data = cursor.fetchall()
+            return data
+            cursor.close()
+
     def __del__(self):
         self.connection.close()
 
@@ -95,6 +104,7 @@ if __name__ == "__main__":
     # print(newUtils.viewMarkInExam('SV1810812', 'CO2017', '2020-03-15', '2001'))
     # print(newUtils.viewMarkInAllExam('SV1810812', '2020-03-15'))
     # newUtils.noteOnExam('SV1810812', 'CO2017', '2020-03-15', '2001', 1, 'This is very very hard exam.')
+    newUtils.getExamOfStudent('SV1810812')
 
 
 

@@ -932,7 +932,7 @@ END //
 DELIMITER ;
 
 -- Test
-CALL view_ratio_outcome_in_exam ('SV1810812','CO2017', '2020-03-15', '2001');
+-- CALL view_ratio_outcome_in_exam ('SV1810812','CO2017', '2020-03-15', '2001');
 
 /*
  * 24. Note on exam for STUDENT

@@ -84,6 +84,7 @@ CREATE TABLE OUTCOME (
 CREATE TABLE EXAM_TIME (
 	Subject_Code CHAR(6),
 	Exam_Date DATE,
+	Semester VARCHAR(3),
 	PRIMARY KEY (Subject_Code, Exam_Date),
 	FOREIGN KEY (Subject_Code) REFERENCES SUBJECT (Subject_Code)
 );
@@ -266,10 +267,17 @@ CREATE TABLE LEC_INCHARGE_SUB (
     FOREIGN KEY (Inchr_Subject_Code) REFERENCES SUBJECT (Subject_Code)
 );
 
+
+-- Modify semester
+DROP TABLE IF EXISTS LEARN_SUB;
 CREATE TABLE LEARN_SUB (
 	Student_ID VARCHAR(9),
     Learn_Subject_Code CHAR(6),
+	Semester VARCHAR(3),
     PRIMARY KEY (Student_ID, Learn_Subject_Code),
     FOREIGN KEY (Student_ID) REFERENCES STUDENT (Student_ID),
     FOREIGN KEY (Learn_Subject_Code) REFERENCES SUBJECT (Subject_Code)
 );
+
+ALTER TABLE EXAM_TIME
+ADD COLUMN Content VARCHAR(255);

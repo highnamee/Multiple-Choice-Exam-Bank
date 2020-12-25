@@ -1,9 +1,11 @@
 from Utils.accountUtils import accountState, accountUtils
 from flask import Flask, render_template, redirect, url_for, request, session
+from datetime import date
 
 import sys
 sys.path.append('Utils/')
 from accountUtils import *
+from studentUtils import *
 
 app = Flask(__name__)
 app.secret_key = "Database 201"
@@ -41,9 +43,8 @@ def login():
         checkLecture = checkLogin.checkLecturerLogin(username, password)
         if checkStudent:
             session["accountState"] = checkStudent
-            print(session)
             print("Logged in successfully")
-            # redirect to student page
+            return redirect(url_for('student'))
         if checkLecture:
             session["accountState"] = checkStudent
             print("Logged in successfully")
@@ -51,6 +52,18 @@ def login():
         else:
             error = 'Invalid credentials'
     return render_template('login.html', error=error)
+
+@app.route('/student')
+def student():
+    newUtils = studentUtils()
+    examList = newUtils.getExamOfStudent(session["accountState"]["ID"])
+    print(examList)
+    today = date.today()
+    incomingExam = list(filter(lambda x: x[2] >= today, examList))
+    passedExam = list(filter(lambda x: x[2] <= today, examList))
+    print(incomingExam)
+    print(passedExam)
+    return render_template('student.html', incomingExam = incomingExam, passedExam = passedExam)
 
 if __name__ == '__main__':
     app.run(debug=True)

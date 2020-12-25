@@ -86,11 +86,11 @@ h1 {
 }
 
 h2 {
-    font-size: 22px
+    font-size: 22px;
 }
 
 h3 {
-    font-size: 18px
+    font-size: 20px;
 }
 
 h4 {
@@ -123,6 +123,18 @@ h4 a:hover,
 h5 a:hover,
 h6 a:hover {
     opacity: .8
+}
+
+.table_title {
+    letter-spacing: 0;
+    font-weight: normal;
+    position: relative;
+    padding: 0 0 10px 0;
+    font-weight: normal;
+    line-height: 120% !important;
+    color: #1fb299;
+    margin: 0;
+    font-size: 24px
 }
 
 a {
@@ -929,6 +941,7 @@ a img.aligncenter {
 .first-section h2 strong{
     color: #1fb299;
 }
+
 
 .first-section .lead {
     font-size: 21px;

@@ -35,9 +35,14 @@ INSERT IGNORE INTO STUDENT
 VALUES ('SV1810340', 'Võ Hoàng Hải', 'Nam', 'CSE', NULL, NULL, NULL);
 
 INSERT IGNORE INTO studentAccount
+<<<<<<< HEAD
 VALUES ('student1', '900150983cd24fb0d6963f7d28e17f72', 'SV1810340');
 INSERT IGNORE INTO studentAccount
 VALUES ('student2', '900150983cd24fb0d6963f7d28e17f72', 'SV1810812');
+=======
+VALUES ('student1', '900150983cd24fb0d6963f7d28e17f72', 'SV1810340'),
+	   ('student2', '900150983cd24fb0d6963f7d28e17f72', 'SV1810812');
+>>>>>>> d769d17dd801f3cab9c45ff04ad7c5afb28ba3ba
        
 select * from studentAccount;
 select * from lecturerAccount;

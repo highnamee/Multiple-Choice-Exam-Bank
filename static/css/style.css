@@ -18,7 +18,7 @@
 body {
     color: #333333;
     font-size: 14px;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Helvetica, 'Segoe UI', sans-serif;
     line-height: 1.80857;
 }
 
@@ -472,12 +472,12 @@ a img.aligncenter {
 
 
 .top-navbar .bg-light{
-	background: #ffffff !important;
+	background: #7debd9 !important;
 }
 
 .top-navbar .navbar-light .navbar-nav .nav-link{
-	color: #000000;
-	font-size: 16px;
+	color: #ffffff;
+	font-size: 14px;
 	font-weight: 500;
 }
 
@@ -635,7 +635,7 @@ a img.aligncenter {
 
 .navbar-right li a{
 	position: relative;
-	font-size: 18px;
+	font-size: 14px;
 	display: inline-block;
 }
 .navbar-right li a,
@@ -896,7 +896,7 @@ a img.aligncenter {
 	text-transform: uppercase;
 	position: relative;
 	border: 2px solid #fff;
-	font-size: 14px;
+	font-size: 12px;
 	-webkit-transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
 	-ms-transition: all 0.3s ease-in-out;
@@ -929,7 +929,7 @@ a img.aligncenter {
 
 .first-section h2 {
     color: #ffffff;
-    font-size: 90px;
+    font-size: 68px;
     font-weight: 300;
     text-transform: capitalize;
     display: block;
@@ -939,7 +939,7 @@ a img.aligncenter {
 }
 
 .first-section h2 strong{
-    color: #1fb299;
+	color: #1fb299;
 }
 
 
@@ -1688,7 +1688,7 @@ a img.aligncenter {
 
 .icon-wrapper p small:after {
     content: "\f105";
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Helvetica, 'Segoe UI', sans-serif;
     margin-left: 5px;
     font-size: 11px;
 }
@@ -2488,9 +2488,9 @@ select.mobile-device {
 }
 
 .footer {
-    padding: 40px 0 40px !important;
-    color: #000;
-	background: #fff no-repeat center; 
+    padding: 90px 0 80px !important;
+    color: #fff;
+	background: #1fb299 no-repeat center; 
 }
 
 .footer .widget-title {
@@ -2500,17 +2500,17 @@ select.mobile-device {
 }
 
 .footer .widget-title small {
-    color: #000;
+    color: #fff;
     display: block;
     padding: 0 58px;
     text-transform: uppercase;
 }
 
 .footer .widget-title h3 {
-    color: #1fb299;
+    color: #fff;
     font-weight: 700;
     font-size: 22px;
-    padding-bottom: 10;
+    padding: 0;
     margin: 0;
     line-height: 1 !important;
 }
@@ -3017,7 +3017,7 @@ span.m_1 {
 }
 .pricingTable .pricingContent ul li:before{
     content: "\f00c";
-    font-family: 'Segoe UI', sans-serif; font-weight: 900;
+    font-family: Helvetica, 'Segoe UI', sans-serif; font-weight: 900;
     margin-right: 10px;
     transition:all 0.5s ease 0s;
 }
@@ -3051,7 +3051,7 @@ span.m_1 {
 }
 .pricingTable .btn-block:before{
     content: "\f07a";
-    font-family: 'Segoe UI', sans-serif; font-weight: 900;
+    font-family: Helvetica, 'Segoe UI', sans-serif; font-weight: 900;
     margin-right: 10px;
 }
 .pricingTable.pink .pricingTable-header{

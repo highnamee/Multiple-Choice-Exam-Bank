@@ -12,7 +12,7 @@
     <title>HCMUT MCQS</title>  
 
     <!-- Site Icons -->
-    <link rel="icon" type="image/png" href="../static//loginCssStyle/images/icons/LogoBK.ico"/>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='loginCssStyle/images/icons/logoBK.ico') }}"/>
     <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
 
     <!-- Bootstrap CSS -->
@@ -46,12 +46,9 @@
 	<header class="top-navbar">
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="index.html">
-					<img src="../static/img/LogoBK.ico" alt="LogoBK" style="width:50px;height:50px;" />
+				<a class="navbar-brand" href="#">
+					<img src="images/logo.png" alt="" />
 				</a>
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a class="nav-link" href="index.html">HCMUT Multiple choice exam bank system</a></li>
-				</ul>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -59,11 +56,9 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbars-host">
 					<ul class="navbar-nav ml-auto">
-						<li class="nav-item"><a class="nav-link" href="/">Bach Khoa</a></li>
 						<li class="nav-item active"><a class="nav-link" href="/">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/mcq">Câu hỏi trắc nghiệm</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/exam">Đề thi</a></li>
+						<li class="nav-item"><a class="nav-link" href="/contact">Liên hệ</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
                         <li><a href="{{ url_for('login') }}" class="hover-btn-new"><span>Đăng nhập</span></a></li>
@@ -83,7 +78,7 @@
 		</ol>
 		<div class="carousel-inner" role="listbox">
 			<div class="carousel-item active">
-				<div id="home" class="first-section" style="background-image:url('../static/img/slide1.jpg');">
+				<div id="home" class="first-section" style="background-image:url('images/slider-01.jpg');">
 					<div class="dtab">
 						<div class="container">
 							<div class="row">
@@ -100,7 +95,7 @@
 				</div><!-- end section -->
 			</div>
 			<div class="carousel-item">
-				<div id="home" class="first-section" style="background-image:url('../static/img/slide2.jpg');">
+				<div id="home" class="first-section" style="background-image:url('images/slider-02.jpg');">
 					<div class="dtab">
 						<div class="container">
 							<div class="row">
@@ -117,7 +112,7 @@
 				</div><!-- end section -->
 			</div>
 			<div class="carousel-item">
-				<div id="home" class="first-section" style="background-image:url('../static/img/slide3.jpeg');">
+				<div id="home" class="first-section" style="background-image:url('images/slider-03.jpg');">
 					<div class="dtab">
 						<div class="container">
 							<div class="row">
@@ -174,16 +169,28 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-md-8 col-xs-12">
+                <div class="col-lg-4 col-md-4 col-xs-12">
                     <div class="widget clearfix">
                         <div class="widget-title">
                             <h3>MCQs and Exams Bank</h3>
                         </div>
-						<p> This is web app made by group 7 for Database design assignment</p>
-						<p> Lecturer: Dr. Vo Thi Ngoc Chau</p>   
+                        <p> ... </p>   
 						<div class="footer-right">
 							
 						</div>						
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+
+				<div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>Danh mục</h3>
+                        </div>
+                        <ul class="footer-links">
+                            <li><a href="/">Trang chủ</a></li>
+                            <li><a href="/about">Giới thiệu</a></li>
+							<li><a href="/contact">Liên hệ</a></li>
+                        </ul><!-- end links -->
                     </div><!-- end clearfix -->
                 </div><!-- end col -->
 				

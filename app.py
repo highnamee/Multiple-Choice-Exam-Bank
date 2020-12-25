@@ -40,30 +40,32 @@ def login():
         checkLogin = accountUtils()
 
         checkStudent = checkLogin.checkStudentLogin(username, password)
-        checkLecture = checkLogin.checkLecturerLogin(username, password)
+        checkLecturer = checkLogin.checkLecturerLogin(username, password)
         if checkStudent:
             session["accountState"] = checkStudent
             print("Logged in successfully")
-            return redirect(url_for('student'))
-        if checkLecture:
-            session["accountState"] = checkStudent
+            return redirect(url_for('index_stud'))
+        elif checkLecturer:
+            session["accountState"] = checkLecturer
+            print(session)
             print("Logged in successfully")
-            # redirect to lecturer page
+            return redirect(url_for('index_lec'))
         else:
             error = 'Invalid credentials'
     return render_template('login.html', error=error)
 
-@app.route('/student')
-def student():
+@app.route('/lec')
+def index_lec():
+    return render_template('index_lec.html', session=session)
+
+@app.route('/stud')
+def index_stud():
     newUtils = studentUtils()
     examList = newUtils.getExamOfStudent(session["accountState"]["ID"])
-    print(examList)
     today = date.today()
     incomingExam = list(filter(lambda x: x[2] >= today, examList))
     passedExam = list(filter(lambda x: x[2] <= today, examList))
-    print(incomingExam)
-    print(passedExam)
-    return render_template('student.html', incomingExam = incomingExam, passedExam = passedExam)
+    return render_template('index_stud.html', incomingExam = incomingExam, passedExam = passedExam)
 
 if __name__ == '__main__':
     app.run(debug=True)

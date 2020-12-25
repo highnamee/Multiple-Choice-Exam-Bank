@@ -103,3 +103,119 @@ class MarkInExam:
 
     def __str__(self):
         pass
+
+
+
+
+
+
+
+
+
+#Khai
+
+@dataclass
+class ManagementLecturer:
+    Lecturer_ID: str
+    Last_name: str
+    First_name: str
+    Faculty: str
+    Address: str
+    Email: str
+    Phone: str
+    Degree
+
+@dataclass
+class LecturerInCharge:
+    Lecturer_ID: str
+    Inchr_Subject_Code: str
+    Last_name: str
+    First_name: str
+    Faculty: str
+    Address: str
+    Email: str
+    Phone: str
+    Degree: str
+    Role: str
+
+    def __str__(self):
+        pass
+
+
+@dataclass
+class Question:
+    Question_ID: str
+    Sub_Code: str
+    Exam_Date: str
+    Level: str
+    Question_No: int
+    Correct_Choice_ID: str
+    #? Mixoption: str
+    Number_Of_Choices: int
+    Described_Content_ID: str
+    Ctrb_Lecturer_ID: str
+    
+    Content: str
+    def __str__(self):
+        pass
+
+
+@dataclass
+class Choice:
+    Subject_Code: str
+    Exam_Date: str
+    Question_ID: str
+    Question_No: str
+    Mix_Correct_Choice_IDs: str
+
+    def __str__(self):
+        pass
+
+@dataclass
+class Answer:
+    Student_ID: str
+    Subject_Code: str
+    Exam_Date: str
+    Exam_Code: str
+    Answer_Number: str
+    Student_Note: str
+
+@dataclass
+class AnswerContent:
+    Student_ID: str
+    Subject_Code: Str
+    Exam_Date: str
+    Exam_Code: str 
+    Answer_Number: str
+    Answer_No: str
+    Answer_Choice_IDs: str
+
+@dataclass
+class ExamTime:
+    SubjectCode: str
+    ExamDate: str
+    Semester: int
+    SchoolYear: int
+    Number_Of_Exams: int
+
+
+    def __str__(self):
+        pass
+
+@dataclass
+class Exam:
+    #
+    Subject_Code: str
+    Exam_Date: str;
+    ExamCode: str
+    Lecturer_Note: str
+    Number_O_fQuestions: str
+    BC_Lecturer_ID: str
+    Total_Positions: str
+    Number_Of_Different_Positions: str
+    QuestionsList: List[QuestionsItem]
+
+
+@dataclass
+class Mark:
+    pass

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from re import template
 from typing import List, Tuple
 
+
 @dataclass
 class Student:
     """Class to store Student's information"""
@@ -15,6 +16,7 @@ class Student:
 
     def __str__(self):
         pass
+
 
 @dataclass
 class ExamViewItem:
@@ -33,12 +35,14 @@ class ExamViewItem:
     Choice_Content: str
     CFile_Path: str
 
+
 @dataclass
 class ExamView:
     QuestionList: List[ExamViewItem]
 
     def __str__(self):
         pass
+
 
 @dataclass
 class ExamSolutionViewItem:
@@ -58,12 +62,14 @@ class ExamSolutionViewItem:
     CFile_Path: str
     Mix_Correct_Choice_IDs: str
 
+
 @dataclass
 class ExamSolutionView:
     QuestionList: List[ExamSolutionViewItem]
 
     def __str__(self):
         pass
+
 
 @dataclass
 class StudentAnswerItem:
@@ -86,12 +92,14 @@ class StudentAnswerItem:
     Answer_Choice_IDs: str
     Check_Sol: str
 
+
 @dataclass
 class StudentAnswerView:
     AnswerList: List[StudentAnswerItem]
 
     def __str__(self):
         pass
+
 
 @dataclass
 class MarkInExam:
@@ -103,14 +111,7 @@ class MarkInExam:
         pass
 
 
-
-
-
-
-
-
-
-#Khai
+# Khai
 
 @dataclass
 class ManagementLecturer:
@@ -121,7 +122,8 @@ class ManagementLecturer:
     Address: str
     Email: str
     Phone: str
-    Degree
+    Degree: str
+
 
 @dataclass
 class LecturerInCharge:
@@ -148,12 +150,13 @@ class Question:
     Level: str
     Question_No: int
     Correct_Choice_ID: str
-    #? Mixoption: str
+    # ? Mixoption: str
     Number_Of_Choices: int
     Described_Content_ID: str
     Ctrb_Lecturer_ID: str
-    
+
     Content: str
+
     def __str__(self):
         pass
 
@@ -165,6 +168,8 @@ class Choice:
     Question_ID: str
     Question_No: str
     Mix_Correct_Choice_IDs: str
+
+
 @dataclass
 class NumQuestion:
     Question_Id: str
@@ -177,6 +182,7 @@ class NumQuestion:
     def __str__(self):
         pass
 
+
 @dataclass
 class Answer:
     Student_ID: str
@@ -186,15 +192,17 @@ class Answer:
     Answer_Number: str
     Student_Note: str
 
+
 @dataclass
 class AnswerContent:
     Student_ID: str
-    Subject_Code: Str
+    Subject_Code: str
     Exam_Date: str
-    Exam_Code: str 
+    Exam_Code: str
     Answer_Number: str
     Answer_No: str
     Answer_Choice_IDs: str
+
 
 @dataclass
 class ExamTime:
@@ -204,27 +212,28 @@ class ExamTime:
     SchoolYear: int
     Number_Of_Exams: int
 
-
     def __str__(self):
         pass
 
+
 @dataclass
 class Exam:
-    #
     Subject_Code: str
-    Exam_Date: str;
+    Exam_Date: str
     ExamCode: str
     Lecturer_Note: str
     Number_O_fQuestions: str
     BC_Lecturer_ID: str
     Total_Positions: str
     Number_Of_Different_Positions: str
-    QuestionsList: List[QuestionsItem]
+    # QuestionsList: List[QuestionsItem]
 
 
 @dataclass
 class Mark:
     pass
+
+
 class OutcomeResult:
     Evl_Outcome_No: str
     Question_Id: str

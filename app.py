@@ -30,11 +30,11 @@ def exam():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    error = None
     if request.method == "POST":
         req = request.form
         username = req.get("username")
         password = req.get("password")
-        error = None
         checkLogin = accountUtils()
 
         if checkLogin.checkStudentLogin(username, password):

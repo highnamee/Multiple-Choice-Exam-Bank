@@ -460,11 +460,11 @@ a img.aligncenter {
 
 
 .top-navbar .bg-light{
-	background: #7debd9 !important;
+	background: #ffffff !important;
 }
 
 .top-navbar .navbar-light .navbar-nav .nav-link{
-	color: #ffffff;
+	color: #000000;
 	font-size: 16px;
 	font-weight: 500;
 }
@@ -917,7 +917,7 @@ a img.aligncenter {
 
 .first-section h2 {
     color: #ffffff;
-    font-size: 68px;
+    font-size: 90px;
     font-weight: 300;
     text-transform: capitalize;
     display: block;
@@ -927,7 +927,7 @@ a img.aligncenter {
 }
 
 .first-section h2 strong{
-	color: #1fb299;
+    color: #1fb299;
 }
 
 .first-section .lead {
@@ -2475,9 +2475,9 @@ select.mobile-device {
 }
 
 .footer {
-    padding: 90px 0 80px !important;
-    color: #fff;
-	background: #1fb299 no-repeat center; 
+    padding: 40px 0 40px !important;
+    color: #000;
+	background: #fff no-repeat center; 
 }
 
 .footer .widget-title {
@@ -2487,17 +2487,17 @@ select.mobile-device {
 }
 
 .footer .widget-title small {
-    color: #fff;
+    color: #000;
     display: block;
     padding: 0 58px;
     text-transform: uppercase;
 }
 
 .footer .widget-title h3 {
-    color: #fff;
+    color: #1fb299;
     font-weight: 700;
     font-size: 22px;
-    padding: 0;
+    padding-bottom: 10;
     margin: 0;
     line-height: 1 !important;
 }

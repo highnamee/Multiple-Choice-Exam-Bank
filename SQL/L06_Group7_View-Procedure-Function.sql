@@ -916,13 +916,13 @@ BEGIN
 	SELECT Evl_Outcome_No, (Num_Correct_Ans / Total_Ques) AS Ratio FROM
 		(SELECT Evl_Outcome_No, Total_Ques, IF (Num_Correct_Ans IS NULL, 0, Num_Correct_Ans) AS Num_Correct_Ans
 		FROM 
-			(SELECT Evl_Outcome_No, COUNT(*) AS Total_Ques
+			(SELECT Evl_Outcome_No, COUNT(question_no) AS Total_Ques
 			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
 					WHERE Student_ID = StudentID AND Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
 					GROUP BY Question_No) sta
 			GROUP BY Evl_Outcome_No) correct
 			NATURAL LEFT JOIN
-			(SELECT Evl_Outcome_No, COUNT(*) AS Num_Correct_Ans
+			(SELECT Evl_Outcome_No, COUNT(question_no) AS Num_Correct_Ans
 			FROM	(SELECT * FROM RESULT_STUDENT_ANSWER 
 					WHERE Student_ID = StudentID AND Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
 					GROUP BY Question_No) sta
@@ -932,7 +932,7 @@ END //
 DELIMITER ;
 
 -- Test
--- CALL view_ratio_outcome_in_exam ('SV1810812','CO2017', '2020-03-15', '2001');
+CALL view_ratio_outcome_in_exam ('SV1810812','CO2017', '2020-03-15', '2001');
 
 /*
  * 24. Note on exam for STUDENT

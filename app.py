@@ -1,12 +1,12 @@
-from Utils.accountUtils import accountUtils
-from flask import Flask, render_template, redirect, url_for, request
+from Utils.accountUtils import accountState, accountUtils
+from flask import Flask, render_template, redirect, url_for, request, session
 
 import sys
 sys.path.append('Utils/')
 from accountUtils import *
 
 app = Flask(__name__)
-
+app.secret_key = "Database 201"
 
 @app.route('/')
 def index():
@@ -37,10 +37,15 @@ def login():
         password = req.get("password")
         checkLogin = accountUtils()
 
-        if checkLogin.checkStudentLogin(username, password):
+        checkStudent = checkLogin.checkStudentLogin(username, password)
+        checkLecture = checkLogin.checkLecturerLogin(username, password)
+        if checkStudent:
+            session["accountState"] = checkStudent
+            print(session)
             print("Logged in successfully")
             # redirect to student page
-        elif checkLogin.checkLecturerLogin(username, password):
+        if checkLecture:
+            session["accountState"] = checkStudent
             print("Logged in successfully")
             # redirect to lecturer page
         else:

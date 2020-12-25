@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import mysql.connector, sys
 from mysql.connector import Error
 import hashlib
@@ -5,6 +6,19 @@ import hashlib
 """
 Using MD5 hashing
 """
+
+@dataclass
+class accountState():
+    username: str
+    ID: str
+
+@dataclass
+class accountStudent(accountState):
+    pass
+
+@dataclass
+class accountLecturer(accountState):
+    pass
 
 class accountUtils:
     def __init__(self):
@@ -22,7 +36,7 @@ class accountUtils:
             cursor.execute("SELECT * FROM studentAccount WHERE username = %s AND password = %s", (username, passwordHasing))
             data = cursor.fetchone()
             cursor.close()
-            return False if data is None else True
+            return None if data is None else accountStudent(username, data[2])
 
     def checkLecturerLogin(self, username, password):
         """ Return true if lecturer's username and password are correct """
@@ -32,7 +46,7 @@ class accountUtils:
             cursor.execute("SELECT * FROM lecturerAccount WHERE username = %s AND password = %s", (username, passwordHasing))
             data = cursor.fetchone()
             cursor.close()
-            return False if data is None else True
+            return None if data is None else accountLecturer(username, data[2])
 
     def changePassword(self, username, currentPassword, newPassword):
         """ Change password. Return false if current password is incorrect """
@@ -69,10 +83,10 @@ class accountUtils:
                 cursor.close()
                 return True
             return False
-            
+
 if __name__ == "__main__":
     login = accountUtils()
-    # print(login.checkStudentLogin('student1','1234'))
-    # print(login.checkLecturerLogin('lecturer1', 'abc'))
+    # print(login.checkStudentLogin('student1','abc'))
+    print(login.checkLecturerLogin('lecturer1', 'abc'))
     # print(login.changePassword('student1','abc','abc'))
-    print(login.createAccount('lecturer6','abc','GV444444'))
+    # print(login.createAccount('lecturer6','abc','GV444444'))

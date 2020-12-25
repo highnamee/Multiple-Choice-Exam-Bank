@@ -14,10 +14,6 @@ class Student:
     Email: str
     Phone: str
 
-    def __str__(self):
-        pass
-
-
 @dataclass
 class ExamViewItem:
     Subject_Code: str
@@ -39,10 +35,6 @@ class ExamViewItem:
 @dataclass
 class ExamView:
     QuestionList: List[ExamViewItem]
-
-    def __str__(self):
-        pass
-
 
 @dataclass
 class ExamSolutionViewItem:
@@ -67,10 +59,6 @@ class ExamSolutionViewItem:
 class ExamSolutionView:
     QuestionList: List[ExamSolutionViewItem]
 
-    def __str__(self):
-        pass
-
-
 @dataclass
 class StudentAnswerItem:
     Subject_Code: str
@@ -87,29 +75,19 @@ class StudentAnswerItem:
     Choice_ID: str
     Choice_Content: str
     CFile_Path: str
-    Mix_Correct_Choice_IDs: str
     Student_ID: str
     Answer_Choice_IDs: str
-    Check_Sol: str
 
 
 @dataclass
 class StudentAnswerView:
     AnswerList: List[StudentAnswerItem]
 
-    def __str__(self):
-        pass
-
-
 @dataclass
 class MarkInExam:
     In_Sub_Code: str
     In_Exam_Code: str
     Mark: float
-
-    def __str__(self):
-        pass
-
 
 # Khai
 

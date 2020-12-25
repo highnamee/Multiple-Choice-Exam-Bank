@@ -101,3 +101,27 @@ class MarkInExam:
 
     def __str__(self):
         pass
+
+@dataclass
+class NumQuestion:
+    Question_Id: str
+    Content: str
+    Subject_Code: str
+    Exam_Date: str
+    Num_Stud_Right: int
+    Num_Stud_Wrong: int
+
+    def __str__(self):
+        pass
+
+@dataclass
+class OutcomeResult:
+    Evl_Outcome_No: str
+    Question_Id: str
+    Subject_Code: str
+    Exam_Date: str
+    Ratio: float
+    Grade: float
+
+    def __str__(self):
+        pass

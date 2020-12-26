@@ -84,7 +84,7 @@
                 <th scope="col">Môn học</th>
                 <th scope="col">Nội dung bài kiểm tra</th>
                 <th scope="col">Ngày kiểm tra</th>
-                <th scope="col">Đã hoàn thành</th>
+                <th scope="col">Tình trạng</th>
               </tr>
             </thead>
             <tbody>
@@ -93,7 +93,7 @@
                 <th> {{ SubCode }} </th>
                 <td> {{ Content }} </td>
                 <td> {{ Date}} </td>
-                <td> Chưa </td>
+                <td> <a href="{{ url_for('take_exam', SubjectCode = SubCode, ExamDate = Date) }}" class="btn btn-primary btn-sm active" role="button">Làm bài</a> </td>
               </tr>
               {% endfor %}
             </tbody>

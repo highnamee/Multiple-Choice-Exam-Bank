@@ -36,6 +36,24 @@ class ExamViewItem:
 class ExamView:
     QuestionList: List[ExamViewItem]
 
+    def getDisplayInfo(self):
+        if self.QuestionList:
+            listInfo = []
+            currentList = [self.QuestionList[0].Question_No, self.QuestionList[0].CDescription, self.QuestionList[0].QContent]
+            for item in self.QuestionList:
+                if item.Question_No == currentList[0]:
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+                else:
+                    if len(currentList) == 7:
+                        currentList.append([None,None])
+                    listInfo.append(currentList)
+                    currentList = [item.Question_No, item.CDescription, item.QContent]
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+            if len(currentList) == 7:
+                currentList.append([None,None])
+            listInfo.append(currentList)
+            return listInfo
+
 @dataclass
 class ExamSolutionViewItem:
     Subject_Code: str

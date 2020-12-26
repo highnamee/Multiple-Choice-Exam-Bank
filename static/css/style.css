@@ -125,6 +125,18 @@ h6 a:hover {
     opacity: .8
 }
 
+.table_title{
+    letter-spacing: 0;
+    font-weight: normal;
+    position: relative;
+    padding: 0 0 10px 0;
+    font-weight: normal;
+    line-height: 120% !important;
+    color: #1fb299;
+    margin: 0;
+    font-size: 24px
+}
+
 a {
     color: #1f1f1f;
     text-decoration: none;

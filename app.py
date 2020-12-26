@@ -1,8 +1,11 @@
+from Models.Models import Question
 from Utils.accountUtils import accountState, accountUtils
 from flask import Flask, render_template, redirect, url_for, request, session
 from datetime import date
 
 import sys
+sys.path.append('Models/')
+from Models import *
 sys.path.append('Utils/')
 from accountUtils import *
 from studentUtils import *
@@ -71,6 +74,16 @@ def index_stud():
     incomingExam = list(filter(lambda x: x[2] >= today, examList))
     passedExam = list(filter(lambda x: x[2] <= today, examList))
     return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam)
+
+@app.route('/stud/takeExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
+def take_exam(SubjectCode, ExamDate):
+    # for display exam with question and answer
+    newUtils = studentUtils()
+    question = newUtils.viewPerformedExam(SubjectCode, ExamDate, '2001')
+    subName = ""
+    if question:
+        subName = question.QuestionList[0].Subject_Name
+    return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName)
 
 if __name__ == '__main__':
     app.run(debug=True)

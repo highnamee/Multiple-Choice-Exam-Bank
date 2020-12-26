@@ -28,8 +28,8 @@ class studentUtils:
         if self.connection.is_connected():
             cursor = self.connection.cursor()
             cursor.callproc('view_performed_exam', [subCode, examDate, examCode])
-            examItem = [ExamViewItem(*item) for result in cursor.stored_results() for item in result]
-            exam = ExamView(examItem)
+            examItem = [Models.ExamViewItem(*item) for result in cursor.stored_results() for item in result]
+            exam = Models.ExamView(examItem)
             cursor.close()
             return exam
 
@@ -98,13 +98,15 @@ class studentUtils:
 
 if __name__ == "__main__":
     newUtils = studentUtils()
-    # print(newUtils.viewPerformedExam('CO2017', '2020-03-15', '2001'))
+    ques = newUtils.viewPerformedExam('CO2017', '2020-03-15', '2001')
+    print(ques)
+    print(ques.getDisplayInfo())
     # print(newUtils.viewExamWithSolutution('CO2017', '2020-03-15', '2001'))
     # print(newUtils.viewStudentAnswer('SV1810812','CO2017', '2020-03-15', '2001'))
     # print(newUtils.viewMarkInExam('SV1810812', 'CO2017', '2020-03-15', '2001'))
     # print(newUtils.viewMarkInAllExam('SV1810812', '2020-03-15'))
     # newUtils.noteOnExam('SV1810812', 'CO2017', '2020-03-15', '2001', 1, 'This is very very hard exam.')
-    newUtils.getExamOfStudent('SV1810812')
+    # newUtils.getExamOfStudent('SV1810812')
 
 
 

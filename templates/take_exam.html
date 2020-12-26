@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+   
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+     <!-- Site Metas -->
+    <title>HCMUT MCQS</title>  
+
+    <!-- Site Icons -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoBK.ico') }}"/>
+    <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- ALL VERSION CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/versions.css') }}">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='take_exam.css') }}">
+    <!-- Modernizer for Portfolio -->
+    <script src="{{ url_for('static', filename='js/modernizer.js') }}"></script>
+
+</head>
+<body class="host_version" data-spy="scroll" data-target=".navbar" data-offset="50"> 
+    <!-- LOADER -->
+	<div id="preloader">
+		<div class="loader-container">
+			<div class="progress-br float shadow">
+				<div class="progress__item"></div>
+			</div>
+		</div>
+	</div>
+	<!-- END LOADER -->	
+	
+	<!-- Start header -->
+	<header class="top-navbar navbar-inverse navbar-fixed-top">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="index.html">
+					<img src="{{ url_for('static', filename='img/LogoBK.ico') }}" alt="LogoBK" style="width:50px;height:50px;" />
+				</a>
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link" id="clock">HCMUT Multiple choice exam bank system</a></li>
+				</ul>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+				</button>
+			</div>
+		</nav>
+	</header>
+	<!-- End header -->
+    <br><br><br>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <p class="table_title">BÀI KIỂM TRA MÔN {{SubjectName}}</strong></p>
+            <br><br><br>
+        </div>
+
+        <form action="" method="POST" id="quiz">
+            <ol>
+                {% for QNo, CDes, QContent, AAnsswer, BAnsswer, CAnsswer, DAnsswer, EAnsswer in exam %}
+                <li>           
+                    <h3><strong>{{QContent}}</strong></h3>
+                    <div>
+                        <input type="checkbox" id="question-1-answers-A" value="A" />
+                        <label for="question-1-answers-A">&nbsp; {{AAnsswer[1]}} </label>
+                    </div>
+                    
+                    <div>
+                        <input type="checkbox" id="question-1-answers-B" value="B" />
+                        <label for="question-1-answers-B">&nbsp; {{BAnsswer[1]}}</label>
+                    </div>
+                    
+                    <div>
+                        <input type="checkbox" id="question-1-answers-C" value="C" />
+                        <label for="question-1-answers-C">&nbsp; {{CAnsswer[1]}}</label>
+                    </div>
+                    
+                    <div>
+                        <input type="checkbox" id="question-1-answers-D" value="D" />
+                        <label for="question-1-answers-D">&nbsp; {{DAnsswer[1]}}</label>
+                    </div>
+
+                    {% if EAnsswer[1] != None %}
+                    <div>
+                        <input type="checkbox" id="question-1-answers-E" value="E" />
+                        <label for="question-1-answers-E">&nbsp; {{EAnsswer[1]}}</label>
+                    </div>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ol>
+        </form>
+      </div>
+
+    
+    <br><br><hr>
+    <!-- Begin footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>MCQs and Exams Bank</h3>
+                        </div>
+						<p> This is web app made by group 7 for Database design assignment</p>
+						<p> Lecturer: Dr. Vo Thi Ngoc Chau</p>   
+						<div class="footer-right">
+							
+						</div>						
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+                <div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>Chi tiết liên hệ</h3>
+                        </div>
+
+                        <!-- <ul class="footer-links">
+                            <li><a href="mailto:#">info@yoursite.com</a></li>
+                            <li><a href="#">www.yoursite.com</a></li>
+                            <li>PO Box 16122 Collins Street West Victoria 8007 Australia</li>
+                            <li>+61 3 8376 6284</li>
+                        </ul> -->
+                        <!-- end links -->
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </footer><!-- end footer -->
+
+    <div class="copyrights">
+        <div class="container">
+            <div class="footer-distributed">
+                <div class="footer-center">                   
+                    <p class="footer-company-name">All Rights Reserved. &copy; 2020 <a href="#">MCQs and Exams Bank</a></p>
+                </div>
+            </div>
+        </div><!-- end container -->
+    </div><!-- end copyrights -->
+
+    <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+
+    <!-- ALL JS FILES -->
+    <script src="{{ url_for('static', filename='js/all.js') }}"></script>
+    <!-- ALL PLUGINS -->
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/timeline.min.js') }}"></script>
+	<script>
+		timeline(document.querySelectorAll('.timeline'), {
+			forceVerticalMode: 700,
+			mode: 'horizontal',
+			verticalStartPosition: 'left',
+			visibleItems: 4
+		});
+    </script>
+    
+    <!-- Script for clock -->
+    <script>
+    // Set the date we're counting down to
+    var deadline = 60; // Minute
+    var countDownDate = new Date().getTime() + deadline*60*1000;
+    // var countDownDate = new Date("Jan 5, 2021 15:37:25").getTime();
+    
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+        // Get today's date and time
+        var now = new Date().getTime();
+        
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+        
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        // Output the result in an element with id="demo"
+        document.getElementById("clock").innerHTML = hours + "h "
+        + minutes + "m " + seconds + "s ";
+        
+        // If the count down is over, write some text 
+        if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+    </script>
+</body>
+</html>

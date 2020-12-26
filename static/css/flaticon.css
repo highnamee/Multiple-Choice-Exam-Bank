@@ -30,6 +30,6 @@
 .flaticon-achievement:before { content: "\f100"; }
 .flaticon-eye:before { content: "\f101"; }
 .flaticon-history:before { content: "\f102"; }
-.flaticon-study:before { content: "\f103"; }
-.flaticon-online:before { content: "\f104"; }
-.flaticon-years:before { content: "\f105"; }
+.flaticon-study:before { content: "\1F4E5"; }
+.flaticon-online:before { content: "\2705"; }
+.flaticon-years:before { content: "\1F4C3"; }

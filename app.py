@@ -70,9 +70,11 @@ def index_lec():
 def index_stud():
     newUtils = studentUtils()
     examList = newUtils.getExamOfStudent(session["accountState"]["ID"])
-    incomingExam = list(filter(lambda x: not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001'), examList))
+    today = date.today()
+    incomingExam = list(filter(lambda x: (not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001')) and x[2] >= today, examList))
     passedExam = list(filter(lambda x: newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001'), examList))
-    return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam)
+    expiredExam = list(filter(lambda x: (not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001')) and x[2] < today, examList))
+    return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam, expiredExam = expiredExam)
 
 @app.route('/stud/takeExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
 def take_exam(SubjectCode, ExamDate):

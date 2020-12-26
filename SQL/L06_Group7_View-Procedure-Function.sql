@@ -861,7 +861,7 @@ DROP PROCEDURE IF EXISTS view_student_answer;
 DELIMITER //
 CREATE PROCEDURE view_student_answer (IN StudentID VARCHAR(9), SubCode CHAR(6), ExamDate DATE, ExamCode CHAR(4))
 BEGIN
-	SELECT * FROM STUDENT_ANSWER
+	SELECT * FROM result_student_answer
     WHERE Student_ID = StudentID AND Subject_Code = SubCode AND Exam_Date = ExamDate AND Exam_Code = ExamCode
     ORDER BY Question_No, Choice_ID;
 END //
@@ -878,7 +878,7 @@ DROP PROCEDURE IF EXISTS view_mark_in_exam;
 DELIMITER $$
 CREATE PROCEDURE view_mark_in_exam (IN In_Sub_Code CHAR(6), In_Exam_Date DATE, In_Exam_Code CHAR(4), Stud_Id VARCHAR(9))
 BEGIN
-	SELECT Mark FROM ANSWER
+	SELECT Mark FROM calculate_mark
     WHERE Student_ID = Stud_ID AND Subject_Code = In_Sub_Code AND Exam_Date = In_Exam_Date AND Exam_Code = In_Exam_Code;
 END $$
 DELIMITER ;

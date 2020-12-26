@@ -54,6 +54,9 @@ class ExamView:
             listInfo.append(currentList)
             return listInfo
 
+    def getNumQuestion(self):
+        return len(self.getDisplayInfo())
+
 @dataclass
 class ExamSolutionViewItem:
     Subject_Code: str
@@ -93,13 +96,33 @@ class StudentAnswerItem:
     Choice_ID: str
     Choice_Content: str
     CFile_Path: str
+    Mix_Correct_Choice_IDs: str
     Student_ID: str
     Answer_Choice_IDs: str
+    Check_Sol: str
 
 
 @dataclass
 class StudentAnswerView:
     AnswerList: List[StudentAnswerItem]
+
+    def getDisplayInfo(self):
+        if self.AnswerList:
+            listInfo = []
+            currentList = [self.AnswerList[0].Question_No, self.AnswerList[0].CDescription, self.AnswerList[0].QContent, self.AnswerList[0].Mix_Correct_Choice_IDs, self.AnswerList[0].Check_Sol, list(self.AnswerList[0].Answer_Choice_IDs)]
+            for item in self.AnswerList:
+                if item.Question_No == currentList[0]:
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+                else:
+                    if len(currentList) == 10:
+                        currentList.append([None,None])
+                    listInfo.append(currentList)
+                    currentList = [item.Question_No, item.CDescription, item.QContent, item.Mix_Correct_Choice_IDs, item.Check_Sol, list(item.Answer_Choice_IDs)]
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+            if len(currentList) == 10:
+                currentList.append([None,None])
+            listInfo.append(currentList)
+            return listInfo
 
 @dataclass
 class MarkInExam:

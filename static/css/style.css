@@ -470,9 +470,8 @@ a img.aligncenter {
     HEADER
 -------------------------------------------------------------------*/
 
-
 .top-navbar .bg-light{
-	background: #ffffff !important;
+	background: #fff  !important;
 }
 
 .top-navbar .navbar-light .navbar-nav .nav-link{
@@ -2489,7 +2488,7 @@ select.mobile-device {
 .footer {
     padding: 40px 0 40px !important;
     color: #000;
-	background: #fff no-repeat center; 
+    background: #dbf0fa  no-repeat center; 
 }
 
 .footer .widget-title {

@@ -1,5 +1,6 @@
 import mysql.connector, sys
 from mysql.connector import Error
+from mysql.connector.fabric.connection import FabricSet
 
 sys.path.append('./Models/')
 from Models import *
@@ -21,6 +22,22 @@ class studentUtils:
                 host='localhost', database='MCQS_EXAMS_BANK', user='root', password='very_strong_password', auth_plugin='mysql_native_password', autocommit=True)
         except Error as e:
             print("Error while connection to Mysql", e)
+
+    # Data req. 17
+    # Add student task
+    def addStudentTask(self, studentID, SubjectCode, ExamDate, ExamCode, AnsNum):
+        AnsNum = 1
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('add_student_task', [studentID, SubjectCode, ExamDate, ExamCode, AnsNum])
+            cursor.close()
+    # Add one answer
+    def addOneAnswer(self, studentID, SubjectCode, ExamDate, ExamCode, AnsNum, AnsNo, AnsChoose):
+        AnsNum = 1
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.callproc('add_one_answer', [studentID, SubjectCode, ExamDate, ExamCode, AnsNum, AnsNo, AnsChoose])
+            cursor.close()
 
     # Data req. 18
     # Return ExamView object
@@ -50,8 +67,8 @@ class studentUtils:
         if self.connection.is_connected():
             cursor = self.connection.cursor()
             cursor.callproc('view_student_answer', [studentID, subCode, examDate, examCode])
-            examItem = [StudentAnswerItem(*item) for result in cursor.stored_results() for item in result]
-            exam = StudentAnswerView(examItem)
+            examItem = [Models.StudentAnswerItem(*item) for result in cursor.stored_results() for item in result]
+            exam = Models.StudentAnswerView(examItem)
             cursor.close()
             return exam
 
@@ -61,7 +78,7 @@ class studentUtils:
         if self.connection.is_connected():
             cursor = self.connection.cursor()
             cursor.callproc('view_mark_in_exam', [subCode, examDate, examCode, studentID])
-            markList = [MarkInExam(None, None,*item) for result in cursor.stored_results() for item in result]
+            markList = [Models.MarkInExam(None, None,*item) for result in cursor.stored_results() for item in result]
             mark = markList[0]
             cursor.close()
             return mark
@@ -90,23 +107,35 @@ class studentUtils:
             cursor = self.connection.cursor()
             cursor.execute("SELECT Subject_Code, Content, Exam_Date FROM LEARN_SUB a JOIN EXAM_TIME b ON a.Semester = b.Semester AND a.Learn_Subject_Code = Subject_Code AND Student_ID = %s;", (studentID,))
             data = cursor.fetchall()
-            return data
             cursor.close()
+            return data
+
+    # Check student taken this exam or not ?
+    def checkTakenExam(self, studentID, SubjectCode, ExamDate, ExamCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT * FROM ANSWER WHERE Student_ID = %s AND Subject_Code = %s AND Exam_Date = %s AND Exam_Code = %s;", (studentID, SubjectCode, ExamDate, ExamCode))
+            data = cursor.fetchone()
+            cursor.close()
+            return False if data is None else True
 
     def __del__(self):
         self.connection.close()
 
 if __name__ == "__main__":
     newUtils = studentUtils()
-    ques = newUtils.viewPerformedExam('CO2017', '2020-03-15', '2001')
-    print(ques)
-    print(ques.getDisplayInfo())
+    # ques = newUtils.viewPerformedExam('CO2017', '2020-03-15', '2001')
+    # print(ques)
+    # print(ques.getDisplayInfo())
     # print(newUtils.viewExamWithSolutution('CO2017', '2020-03-15', '2001'))
-    # print(newUtils.viewStudentAnswer('SV1810812','CO2017', '2020-03-15', '2001'))
+    # ans = newUtils.viewStudentAnswer('SV1810812','CO2017', '2020-03-15', '2001')
+    # for item in ans.getDisplayInfo():
+    #     print(item)
     # print(newUtils.viewMarkInExam('SV1810812', 'CO2017', '2020-03-15', '2001'))
     # print(newUtils.viewMarkInAllExam('SV1810812', '2020-03-15'))
     # newUtils.noteOnExam('SV1810812', 'CO2017', '2020-03-15', '2001', 1, 'This is very very hard exam.')
-    # newUtils.getExamOfStudent('SV1810812')
+    print(newUtils.getExamOfStudent('SV1810812'))
+    print(newUtils.checkTakenExam('SV1810812','CO2003', '2021-04-15', '2001'))
 
 
 

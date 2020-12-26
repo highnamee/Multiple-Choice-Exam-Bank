@@ -2,13 +2,12 @@
 
 #quiz input {
     vertical-align: middle;
-    transform: scale(2)
+    transform: scale(1.5)
 }
 
 #quiz ol {
    margin: 0 0 10px 20px;
    font-size: 17px;
-   font-weight: bold;
 }
 
 #quiz ol li {

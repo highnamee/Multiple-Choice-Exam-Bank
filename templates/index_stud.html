@@ -81,10 +81,10 @@
         <table class="table">
             <thead>
               <tr class="table-primary">
-                <th scope="col">Môn học</th>
-                <th scope="col">Nội dung bài kiểm tra</th>
-                <th scope="col">Ngày kiểm tra</th>
-                <th scope="col">Tình trạng</th>
+                <th scope="col" style="width: 20%">Môn học</th>
+                <th scope="col" style="width: 40%">Nội dung bài kiểm tra</th>
+                <th scope="col" style="width: 20%">Ngày kiểm tra</th>
+                <th scope="col" style="width: 20%">Tình trạng</th>
               </tr>
             </thead>
             <tbody>
@@ -93,7 +93,7 @@
                 <th> {{ SubCode }} </th>
                 <td> {{ Content }} </td>
                 <td> {{ Date}} </td>
-                <td> <a href="{{ url_for('take_exam', SubjectCode = SubCode, ExamDate = Date) }}" class="btn btn-primary btn-sm active" role="button">Làm bài</a> </td>
+                <td> <a href="{{ url_for('take_exam', SubjectCode = SubCode, ExamDate = Date) }}" class="btn btn-outline-primary btn-sm active" role="button">Làm bài</a> </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -106,10 +106,10 @@
         <table class="table">
             <thead>
               <tr class="table-warning">
-                <th scope="col">Môn học</th>
-                <th scope="col">Nội dung bài kiểm tra</th>
-                <th scope="col">Ngày kiểm tra</th>
-                <th scope="col">Đã hoàn thành</th>
+                <th scope="col" style="width: 20%"> Môn học</th>
+                <th scope="col" style="width: 40%">Nội dung bài kiểm tra</th>
+                <th scope="col" style="width: 20%">Ngày kiểm tra</th>
+                <th scope="col" style="width: 2 0%">Tình trạng</th>
               </tr>
             </thead>
             <tbody>
@@ -118,7 +118,7 @@
                   <th> {{ SubCode }} </th>
                   <td> {{ Content }} </td>
                   <td> {{ Date}} </td>
-                  <td> Hoàn thành </td>
+                  <td> <a href="{{ url_for('view_exam', SubjectCode = SubCode, ExamDate = Date) }}" class="btn btn-outline-warning btn-sm active" role="button">Xem lại</a>  </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -126,7 +126,7 @@
       </div>
 
     
-    <br><br><hr>
+    <br><br>
     <!-- Begin footer -->
     <footer class="footer">
         <div class="container">

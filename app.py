@@ -70,9 +70,8 @@ def index_lec():
 def index_stud():
     newUtils = studentUtils()
     examList = newUtils.getExamOfStudent(session["accountState"]["ID"])
-    today = date.today()
-    incomingExam = list(filter(lambda x: x[2] >= today, examList))
-    passedExam = list(filter(lambda x: x[2] <= today, examList))
+    incomingExam = list(filter(lambda x: not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001'), examList))
+    passedExam = list(filter(lambda x: newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001'), examList))
     return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam)
 
 @app.route('/stud/takeExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
@@ -83,7 +82,31 @@ def take_exam(SubjectCode, ExamDate):
     subName = ""
     if question:
         subName = question.QuestionList[0].Subject_Name
-    return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName)
+    return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName, SubCode = SubjectCode, Date = ExamDate)
+
+@app.route('/submitting/<string:SubjectCode>/<string:ExamDate>/' ,methods=['POST'])
+def submit_exam(SubjectCode, ExamDate):
+    if request.method == "POST":
+        req = request.form
+        newUtils = studentUtils()
+        numOfQuestion = newUtils.viewPerformedExam(SubjectCode, ExamDate, '2001').getNumQuestion()
+
+        newUtils.addStudentTask(session["accountState"]["ID"], SubjectCode, ExamDate, '2001', 1)
+        for index in range(1,numOfQuestion+1):
+            choose = [req.get(str(index)+'A'), req.get(str(index)+'B'), req.get(str(index)+'C'), req.get(str(index)+'D'), req.get(str(index)+'E')]
+            chooseStr = ''
+            for item in choose:
+                chooseStr = chooseStr + (item if item else '')
+            newUtils.addOneAnswer(session["accountState"]["ID"], SubjectCode, ExamDate, '2001', 1, index, chooseStr)
+            
+    return redirect(url_for('index_stud'))
+
+@app.route('/stud/viewExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
+def view_exam(SubjectCode, ExamDate):
+    newUtils = studentUtils()
+    answer = newUtils.viewStudentAnswer(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
+    Mark = newUtils.viewMarkInExam(session["accountState"]["ID"], SubjectCode, ExamDate, '2001').Mark
+    return render_template('view_exam.html', answer = answer.getDisplayInfo(), mark = Mark)
 
 if __name__ == '__main__':
     app.run(debug=True)

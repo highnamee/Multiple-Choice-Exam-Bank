@@ -81,10 +81,12 @@
         <table class="table">
             <thead>
               <tr class="table-primary">
-                <th scope="col" style="width: 20%">Môn học</th>
+                <th scope="col" style="width: 10%"> Môn học</th>
                 <th scope="col" style="width: 30%">Nội dung bài kiểm tra</th>
                 <th scope="col" style="width: 20%">Ngày kiểm tra</th>
-                <th scope="col" style="width: 30%">Tình trạng</th>
+                <th scope="col" style="width: 10%">Tác vụ</th>
+                <th scope="col" style="width: 10%">Điểm</th>
+                <th scope="col" style="width: 20%">Ghi chú</th>
               </tr>
             </thead>
             <tbody>
@@ -94,6 +96,8 @@
                 <td> {{ Content }} </td>
                 <td> {{ Date}} </td>
                 <td> <a href="{{ url_for('take_exam', SubjectCode = SubCode, ExamDate = Date) }}" class="btn btn-outline-primary btn-sm active" role="button">Làm bài</a> </td>
+                <td> Chưa có </td>
+                <td> Bài kiểm tra chưa được làm</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -106,21 +110,23 @@
         <table class="table">
             <thead>
               <tr class="table-warning">
-                <th scope="col" style="width: 20%"> Môn học</th>
+                <th scope="col" style="width: 10%"> Môn học</th>
                 <th scope="col" style="width: 30%">Nội dung bài kiểm tra</th>
                 <th scope="col" style="width: 20%">Ngày kiểm tra</th>
-                <th scope="col" style="width: 10%">Tình trạng</th>
+                <th scope="col" style="width: 10%">Tác vụ</th>
+                <th scope="col" style="width: 10%">Điểm</th>
                 <th scope="col" style="width: 20%">Ghi chú</th>
               </tr>
             </thead>
             <tbody>
-                {% for SubCode, Content, Date in passedExam %}
+                {% for SubCode, Content, Date, Note, Mark in passedExam %}
                 <tr>
                   <th> {{ SubCode }} </th>
                   <td> {{ Content }} </td>
                   <td> {{ Date}} </td>
                   <td> <a href="{{ url_for('view_exam', SubjectCode = SubCode, ExamDate = Date) }}" class="btn btn-outline-warning btn-sm active" role="button">Xem lại</a>  </td>
-                  <td> Không có </td>
+                  <td> {{Mark}} </td>
+                  <td> {{Note}} </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -133,10 +139,12 @@
         <table class="table">
             <thead>
               <tr class="table-danger">
-                <th scope="col" style="width: 20%"> Môn học</th>
+                <th scope="col" style="width: 10%"> Môn học</th>
                 <th scope="col" style="width: 30%">Nội dung bài kiểm tra</th>
                 <th scope="col" style="width: 20%">Ngày kiểm tra</th>
-                <th scope="col" style="width: 30%">Ghi chú</th>
+                <th scope="col" style="width: 10%">Tác vụ</th>
+                <th scope="col" style="width: 10%">Điểm</th>
+                <th scope="col" style="width: 20%">Ghi chú</th>
               </tr>
             </thead>
             <tbody>
@@ -145,7 +153,9 @@
                   <th> {{ SubCode }} </th>
                   <td> {{ Content }} </td>
                   <td> {{ Date}} </td>
-                  <td> Bài kiểm tra đã quá hạn và nhận điểm 0 </td>
+                  <td> Không có</td>
+                  <td> 0.0 </td>
+                  <td> Bài kiểm tra đã quá hạn</td>
                 </tr>
                 {% endfor %}
             </tbody>

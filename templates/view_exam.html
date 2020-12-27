@@ -67,7 +67,7 @@
             <br><br><br>
         </div>
 
-        <form action="" method="POST" id="quiz">
+        <form action="{{url_for('note_on_exam', SubjectCode = SubCode, ExamDate = Date)}}" method="POST" id="quiz">
             <ol>
                 {% for QNo, CDes, QContent, CorrectAns, CheckSol, ChooseAns, AAnsswer, BAnsswer, CAnsswer, DAnsswer, EAnsswer in answer %}
                 <li>           
@@ -135,7 +135,14 @@
             </ol>
             <div class="row justify-content-md-center">
                 <h3><strong>HẾT BÀI</strong></h3>
-                <br><br><br>
+            </div>
+            <br>
+            <div class="row justify-content-md-center">
+                <input type="text" size="50" name="note" placeholder="Nhập ghi chú cho bài kiểm tra này">
+            </div>
+            <br>
+            <div class="row justify-content-md-center">
+                <button class="btn btn-warning" type="submit">Lưu ghi chú</button>
             </div>
         </form>
       </div>

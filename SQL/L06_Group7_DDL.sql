@@ -274,7 +274,7 @@ CREATE TABLE LEARN_SUB (
 	Student_ID VARCHAR(9),
     Learn_Subject_Code CHAR(6),
 	Semester VARCHAR(3),
-    PRIMARY KEY (Student_ID, Learn_Subject_Code),
+    PRIMARY KEY (Student_ID, Learn_Subject_Code, Semester),
     FOREIGN KEY (Student_ID) REFERENCES STUDENT (Student_ID),
     FOREIGN KEY (Learn_Subject_Code) REFERENCES SUBJECT (Subject_Code)
 );

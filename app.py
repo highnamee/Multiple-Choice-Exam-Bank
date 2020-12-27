@@ -66,15 +66,27 @@ def logout():
 def index_lec():
     return render_template('index_lec.html', session=session)
 
+
 @app.route('/stud')
 def index_stud():
     newUtils = studentUtils()
     examList = newUtils.getExamOfStudent(session["accountState"]["ID"])
+
+    # Get section data
     today = date.today()
     incomingExam = list(filter(lambda x: (not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001')) and x[2] >= today, examList))
     passedExam = list(filter(lambda x: newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001'), examList))
     expiredExam = list(filter(lambda x: (not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001')) and x[2] < today, examList))
+
+    # Get note for passed exam
+    for index in range(len(passedExam)):
+        note = newUtils.getStudentNote(session["accountState"]["ID"], passedExam[index][0], passedExam[index][2], '2001')
+        mark = newUtils.viewMarkInExam(session["accountState"]["ID"], passedExam[index][0], passedExam[index][2], '2001')
+        passedExam[index] = (passedExam[index][0], passedExam[index][1], passedExam[index][2], note, mark)
+    print(passedExam)
+
     return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam, expiredExam = expiredExam)
+
 
 @app.route('/stud/takeExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
 def take_exam(SubjectCode, ExamDate):
@@ -85,6 +97,7 @@ def take_exam(SubjectCode, ExamDate):
     if question:
         subName = question.QuestionList[0].Subject_Name
     return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName, SubCode = SubjectCode, Date = ExamDate)
+
 
 @app.route('/submitting/<string:SubjectCode>/<string:ExamDate>/' ,methods=['POST'])
 def submit_exam(SubjectCode, ExamDate):
@@ -103,12 +116,22 @@ def submit_exam(SubjectCode, ExamDate):
             
     return redirect(url_for('index_stud'))
 
+
 @app.route('/stud/viewExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
 def view_exam(SubjectCode, ExamDate):
     newUtils = studentUtils()
     answer = newUtils.viewStudentAnswer(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
-    Mark = newUtils.viewMarkInExam(session["accountState"]["ID"], SubjectCode, ExamDate, '2001').Mark
-    return render_template('view_exam.html', answer = answer.getDisplayInfo(), mark = Mark)
+    Mark = newUtils.viewMarkInExam(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
+    return render_template('view_exam.html', answer = answer.getDisplayInfo(), mark = Mark, SubCode = SubjectCode, Date = ExamDate)
+
+
+@app.route('/processNote/<string:SubjectCode>/<string:ExamDate>/', methods=['GET', 'POST'])
+def note_on_exam(SubjectCode, ExamDate):
+    if request.method == 'POST':
+        newUtils = studentUtils()
+        if newUtils.noteOnExam(session["accountState"]["ID"],SubjectCode, ExamDate, '2001', 1, request.form.get('note')):
+            print("Note on Exam successfully")
+    return redirect(url_for('index_stud'))
 
 if __name__ == '__main__':
     app.run(debug=True)

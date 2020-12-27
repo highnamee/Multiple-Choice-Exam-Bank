@@ -79,7 +79,7 @@ class studentUtils:
             cursor = self.connection.cursor()
             cursor.callproc('view_mark_in_exam', [subCode, examDate, examCode, studentID])
             markList = [Models.MarkInExam(None, None,*item) for result in cursor.stored_results() for item in result]
-            mark = markList[0]
+            mark = markList[0].Mark
             cursor.close()
             return mark
 
@@ -96,10 +96,13 @@ class studentUtils:
     # Data req. 24
     # Print "Note on exam successfully" if note successfully
     def noteOnExam(self, studentID, subCode, examDate, examCode, answerNumber, studentNote):
+        answerNumber = 1
         if self.connection.is_connected():
             cursor = self.connection.cursor()
             cursor.callproc('note_on_exam', [studentID, subCode, examDate, examCode, answerNumber, studentNote])
             cursor.close()
+            return True
+        return False
 
     # Get data for Incoming/Passed Exam table
     def getExamOfStudent(self, studentID):
@@ -111,13 +114,22 @@ class studentUtils:
             return data
 
     # Check student taken this exam or not ?
-    def checkTakenExam(self, studentID, SubjectCode, ExamDate, ExamCode):
+    def checkTakenExam(self, studentID, SubjectCode, ExamDate, ExamCode, AnsNum = 1):
         if self.connection.is_connected():
             cursor = self.connection.cursor()
             cursor.execute("SELECT * FROM ANSWER WHERE Student_ID = %s AND Subject_Code = %s AND Exam_Date = %s AND Exam_Code = %s;", (studentID, SubjectCode, ExamDate, ExamCode))
             data = cursor.fetchone()
             cursor.close()
             return False if data is None else True
+
+    # Get note on student exam
+    def getStudentNote(self, studentID, SubjectCode, ExamDate, ExamCode, AnsNum = 1):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT Student_Note FROM ANSWER WHERE Student_ID = %s AND Subject_Code = %s AND Exam_Date = %s AND Exam_Code = %s;", (studentID, SubjectCode, ExamDate, ExamCode))
+            data = cursor.fetchall()
+            cursor.close()
+            return data[0][0] if data[0][0] else "Không có"
 
     def __del__(self):
         self.connection.close()
@@ -136,6 +148,7 @@ if __name__ == "__main__":
     # newUtils.noteOnExam('SV1810812', 'CO2017', '2020-03-15', '2001', 1, 'This is very very hard exam.')
     print(newUtils.getExamOfStudent('SV1810812'))
     print(newUtils.checkTakenExam('SV1810812','CO2003', '2021-04-15', '2001'))
+    print(newUtils.getStudentNote('SV1810812','CO2003', '2021-03-15', '2001'))
 
 
 

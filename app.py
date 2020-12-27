@@ -122,6 +122,8 @@ def view_exam(SubjectCode, ExamDate):
     newUtils = studentUtils()
     answer = newUtils.viewStudentAnswer(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
     Mark = newUtils.viewMarkInExam(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
+
+    print(answer)
     return render_template('view_exam.html', answer = answer.getDisplayInfo(), mark = Mark, SubCode = SubjectCode, Date = ExamDate, StudentID = session["accountState"]["ID"])
 
 

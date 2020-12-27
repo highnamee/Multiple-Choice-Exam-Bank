@@ -69,8 +69,11 @@
 
         <form action="{{url_for('note_on_exam', SubjectCode = SubCode, ExamDate = Date)}}" method="POST" id="quiz">
             <ol>
-                {% for QNo, CDes, QContent, CorrectAns, CheckSol, ChooseAns, AAnsswer, BAnsswer, CAnsswer, DAnsswer, EAnsswer in answer %}
-                <li>           
+                {% for QNo, CDes, QContent, FilePath, CorrectAns, CheckSol, ChooseAns, AAnsswer, BAnsswer, CAnsswer, DAnsswer, EAnsswer in answer %}
+                <li>
+                    {% if CDes %}
+                        <h3>{{CDes}}</h3>
+                    {% endif %}     
                     <h3><strong>{{QContent}} hello</strong></h3>
                     <div>
                         {% if 'A' in ChooseAns %}

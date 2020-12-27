@@ -69,9 +69,17 @@
 
         <form action="{{ url_for('submit_exam', SubjectCode = SubCode, ExamDate = Date) }}" method="POST" id="quiz">
             <ol>
-                {% for QNo, CDes, QContent, AAnsswer, BAnsswer, CAnsswer, DAnsswer, EAnsswer in exam %}
-                <li>           
+                {% for QNo, CDes, QContent, FilePath, AAnsswer, BAnsswer, CAnsswer, DAnsswer, EAnsswer in exam %}
+                <li>
+                    {% if CDes %}
+                        <h3>{{CDes}}</h3>
+                    {% endif %}         
                     <h3><strong>{{QContent}}</strong></h3>
+                    {% if FilePath %}
+                        <br>
+                        <img src="{{ url_for('static', filename='quesImg/') }}{{FilePath}}" alt="" height="300">
+                    {% endif %}  
+
                     <div>
                         <input type="checkbox" name="{{QNo}}A" value="A" />
                         <label for="{{QNo}}A">&nbsp;&nbsp;&nbsp;A: {{AAnsswer[1]}} </label>

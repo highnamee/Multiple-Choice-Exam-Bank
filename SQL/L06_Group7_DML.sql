@@ -63,8 +63,16 @@ INSERT INTO DESCRIBED_CONTENT
 VALUES ('D1');
 INSERT INTO DESCRIPTION_FILE 
 VALUES ('file:///D:/Downloads/DBS_Ass1_EER%20diagram.png');
+INSERT INTO DESCRIPTION_FILE 
+VALUES ('process_thread.jpeg');
+INSERT INTO DESCRIPTION_FILE 
+VALUES ('linux-filesystem.png');
 INSERT INTO HAS_FILE
 VALUES ('file:///D:/Downloads/DBS_Ass1_EER%20diagram.png', 'D1');
+UPDATE HAS_FILE
+SET File_Path = 'linux-filesystem.png'
+WHERE Described_Content_ID = 'D1';
+
 
 INSERT INTO QUESTION 
 VALUES ('001CO2017', 'Trong quản lý hệ thống tập tin, phát biểu nào sau đây là không đúng với việc dùng danh sách liên kết để quản lý khối chưa sử dụng (free blocks)?', 'Dễ', 4, 'BCD', NULL, 'GV222222', '2019-02-20 12:00', 'L.O.1', 'CO2017');
@@ -213,6 +221,9 @@ VALUES ('001CO2017', 'Giả thiết bộ nhớ máy tính chạy những job tr�
 UPDATE COMMON_DESCRIPTION
 SET Described_Content_ID = 'D1'
 WHERE Description_ID = '001CO2017';
+UPDATE COMMON_DESCRIPTION
+SET Described_Content_ID = 'D1'
+WHERE Description_ID = '002CO2017';
 
 INSERT INTO EXAM_TIME
 VALUES ('CO2017', '2020-03-15', '192');
@@ -252,6 +263,10 @@ INSERT INTO IN_EXAM
 VALUES ('001CO2017', 'CO2017', '2021-04-15', '2001', 2, 0, 'BCD');
 INSERT INTO IN_EXAM
 VALUES ('002CO2017', 'CO2017', '2021-04-15', '2001', 1, 1, 'B');
+INSERT INTO IN_EXAM
+VALUES ('003CO2017', 'CO2017', '2021-04-15', '2001', 4, 0, 'A');
+INSERT INTO IN_EXAM
+VALUES ('004CO2017', 'CO2017', '2021-04-15', '2001', 3, 1, 'D');
 INSERT INTO IN_EXAM
 VALUES ('002CO2017', 'CO2003', '2019-03-15', '2001', 1, 1, 'B');
 

@@ -96,7 +96,7 @@ def take_exam(SubjectCode, ExamDate):
     subName = ""
     if question:
         subName = question.QuestionList[0].Subject_Name
-    return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName, SubCode = SubjectCode, Date = ExamDate)
+    return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName, SubCode = SubjectCode, Date = ExamDate, StudentID = session["accountState"]["ID"])
 
 
 @app.route('/submitting/<string:SubjectCode>/<string:ExamDate>/' ,methods=['POST'])
@@ -122,7 +122,7 @@ def view_exam(SubjectCode, ExamDate):
     newUtils = studentUtils()
     answer = newUtils.viewStudentAnswer(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
     Mark = newUtils.viewMarkInExam(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
-    return render_template('view_exam.html', answer = answer.getDisplayInfo(), mark = Mark, SubCode = SubjectCode, Date = ExamDate)
+    return render_template('view_exam.html', answer = answer.getDisplayInfo(), mark = Mark, SubCode = SubjectCode, Date = ExamDate, StudentID = session["accountState"]["ID"])
 
 
 @app.route('/processNote/<string:SubjectCode>/<string:ExamDate>/', methods=['GET', 'POST'])

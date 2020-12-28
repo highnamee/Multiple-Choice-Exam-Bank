@@ -2,10 +2,11 @@ from Utils.accountUtils import accountState, accountUtils
 from flask import Flask, render_template, redirect, url_for, request, session
 from datetime import date, datetime
 from werkzeug.utils import secure_filename
-
 import sys, os
+
 sys.path.append('Models/') 
 from Models import *
+
 sys.path.append('Utils/')
 from accountUtils import *
 from studentUtils import *

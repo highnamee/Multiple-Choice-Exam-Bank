@@ -4,6 +4,8 @@ from datetime import date, datetime
 from werkzeug.utils import secure_filename
 
 import sys, os
+sys.path.append('Models/') 
+from Models import *
 sys.path.append('Utils/')
 from accountUtils import *
 from studentUtils import *
@@ -214,10 +216,70 @@ def index_lec():
 def index_stud():
     newUtils = studentUtils()
     examList = newUtils.getExamOfStudent(session["accountState"]["ID"])
+
+    # Get section data
     today = date.today()
-    incomingExam = list(filter(lambda x: x[2] >= today, examList))
-    passedExam = list(filter(lambda x: x[2] <= today, examList))
-    return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam)
+    incomingExam = list(filter(lambda x: (not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001')) and x[2] >= today, examList))
+    passedExam = list(filter(lambda x: newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001'), examList))
+    expiredExam = list(filter(lambda x: (not newUtils.checkTakenExam(session["accountState"]["ID"], x[0], x[2], '2001')) and x[2] < today, examList))
+
+    # Get note for passed exam
+    for index in range(len(passedExam)):
+        note = newUtils.getStudentNote(session["accountState"]["ID"], passedExam[index][0], passedExam[index][2], '2001')
+        mark = newUtils.viewMarkInExam(session["accountState"]["ID"], passedExam[index][0], passedExam[index][2], '2001')
+        passedExam[index] = (passedExam[index][0], passedExam[index][1], passedExam[index][2], note, mark)
+    print(passedExam)
+
+    return render_template('index_stud.html', username = session["accountState"]["username"], incomingExam = incomingExam, passedExam = passedExam, expiredExam = expiredExam)
+
+
+@app.route('/stud/takeExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
+def take_exam(SubjectCode, ExamDate):
+    # for display exam with question and answer
+    newUtils = studentUtils()
+    question = newUtils.viewPerformedExam(SubjectCode, ExamDate, '2001')
+    subName = ""
+    if question:
+        subName = question.QuestionList[0].Subject_Name
+    return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName, SubCode = SubjectCode, Date = ExamDate, StudentID = session["accountState"]["ID"])
+
+
+@app.route('/submitting/<string:SubjectCode>/<string:ExamDate>/' ,methods=['POST'])
+def submit_exam(SubjectCode, ExamDate):
+    if request.method == "POST":
+        req = request.form
+        newUtils = studentUtils()
+        numOfQuestion = newUtils.viewPerformedExam(SubjectCode, ExamDate, '2001').getNumQuestion()
+
+        newUtils.addStudentTask(session["accountState"]["ID"], SubjectCode, ExamDate, '2001', 1)
+        for index in range(1,numOfQuestion+1):
+            choose = [req.get(str(index)+'A'), req.get(str(index)+'B'), req.get(str(index)+'C'), req.get(str(index)+'D'), req.get(str(index)+'E')]
+            chooseStr = ''
+            for item in choose:
+                chooseStr = chooseStr + (item if item else '')
+            newUtils.addOneAnswer(session["accountState"]["ID"], SubjectCode, ExamDate, '2001', 1, index, chooseStr)
+            
+    return redirect(url_for('index_stud'))
+
+
+@app.route('/stud/viewExam/<string:SubjectCode>/<string:ExamDate>/',methods=['GET'])
+def view_exam(SubjectCode, ExamDate):
+    newUtils = studentUtils()
+    answer = newUtils.viewStudentAnswer(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
+    Mark = newUtils.viewMarkInExam(session["accountState"]["ID"], SubjectCode, ExamDate, '2001')
+
+    print(answer)
+    return render_template('view_exam.html', answer = answer.getDisplayInfo(), mark = Mark, SubCode = SubjectCode, Date = ExamDate, StudentID = session["accountState"]["ID"])
+
+
+@app.route('/processNote/<string:SubjectCode>/<string:ExamDate>/', methods=['GET', 'POST'])
+def note_on_exam(SubjectCode, ExamDate):
+    if request.method == 'POST':
+        newUtils = studentUtils()
+        if newUtils.noteOnExam(session["accountState"]["ID"],SubjectCode, ExamDate, '2001', 1, request.form.get('note')):
+            print("Note on Exam successfully")
+    return redirect(url_for('index_stud'))
 
 if __name__ == '__main__':
     app.run(debug=True)
+

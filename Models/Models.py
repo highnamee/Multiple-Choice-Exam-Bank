@@ -36,6 +36,27 @@ class ExamViewItem:
 class ExamView:
     QuestionList: List[ExamViewItem]
 
+    def getDisplayInfo(self):
+        if self.QuestionList:
+            listInfo = []
+            currentList = [self.QuestionList[0].Question_No, self.QuestionList[0].CDescription, self.QuestionList[0].QContent, self.QuestionList[0].QFile_Path]
+            for item in self.QuestionList:
+                if item.Question_No == currentList[0]:
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+                else:
+                    if len(currentList) == 8:
+                        currentList.append([None,None])
+                    listInfo.append(currentList)
+                    currentList = [item.Question_No, item.CDescription, item.QContent, item.QFile_Path]
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+            if len(currentList) == 8:
+                currentList.append([None,None])
+            listInfo.append(currentList)
+            return listInfo
+
+    def getNumQuestion(self):
+        return len(self.getDisplayInfo())
+
 @dataclass
 class ExamSolutionViewItem:
     Subject_Code: str
@@ -75,13 +96,33 @@ class StudentAnswerItem:
     Choice_ID: str
     Choice_Content: str
     CFile_Path: str
+    Mix_Correct_Choice_IDs: str
     Student_ID: str
     Answer_Choice_IDs: str
+    Check_Sol: str
 
 
 @dataclass
 class StudentAnswerView:
     AnswerList: List[StudentAnswerItem]
+
+    def getDisplayInfo(self):
+        if self.AnswerList:
+            listInfo = []
+            currentList = [self.AnswerList[0].Question_No, self.AnswerList[0].CDescription, self.AnswerList[0].QContent, self.AnswerList[0].QFile_Path, self.AnswerList[0].Mix_Correct_Choice_IDs, self.AnswerList[0].Check_Sol, list(self.AnswerList[0].Answer_Choice_IDs)]
+            for item in self.AnswerList:
+                if item.Question_No == currentList[0]:
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+                else:
+                    if len(currentList) == 11:
+                        currentList.append([None,None])
+                    listInfo.append(currentList)
+                    currentList = [item.Question_No, item.CDescription, item.QContent, item.QFile_Path, item.Mix_Correct_Choice_IDs, item.Check_Sol, list(item.Answer_Choice_IDs)]
+                    currentList.append([item.Choice_ID, item.Choice_Content])
+            if len(currentList) == 11:
+                currentList.append([None,None])
+            listInfo.append(currentList)
+            return listInfo
 
 @dataclass
 class MarkInExam:

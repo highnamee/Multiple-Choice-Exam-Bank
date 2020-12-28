@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+   
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+     <!-- Site Metas -->
+    <title>HCMUT MCQS</title>  
+
+    <!-- Site Icons -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoBK.ico') }}"/>
+    <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- ALL VERSION CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/versions.css') }}">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='take_exam.css') }}">
+    <!-- Modernizer for Portfolio -->
+    <script src="{{ url_for('static', filename='js/modernizer.js') }}"></script>
+
+</head>
+<body class="host_version" data-spy="scroll" data-target=".navbar" data-offset="50"> 
+    <!-- LOADER -->
+	<div id="preloader">
+		<div class="loader-container">
+			<div class="progress-br float shadow">
+				<div class="progress__item"></div>
+			</div>
+		</div>
+	</div>
+	<!-- END LOADER -->	
+	
+	<!-- Start header -->
+	<header class="top-navbar navbar-inverse navbar-fixed-top">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="index.html">
+                    <img src="{{ url_for('static', filename='img/LogoBK.ico') }}" alt="LogoBK" style="width:50px;height:50px;" />
+                </a>
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link">Điểm của bài kiểm tra này là:  <span style="color:red;font-size:20px">{{mark}}</span></a></li>
+				</ul>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+				</button>
+			</div>
+		</nav>
+	</header>
+	<!-- End header -->
+    <br><br><br>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <p class="exam_tittle"><strong>XEM LẠI BÀI KIỂM TRA</strong></strong></p>
+            <br><br><br>
+        </div>
+
+        <form action="{{url_for('note_on_exam', SubjectCode = SubCode, ExamDate = Date)}}" method="POST" id="quiz">
+            <ol>
+                {% for QNo, CDes, QContent, FilePath, CorrectAns, CheckSol, ChooseAns, AAnsswer, BAnsswer, CAnsswer, DAnsswer, EAnsswer in answer %}
+                <li>
+                    {% if CDes %}
+                        <h3>{{CDes}}</h3>
+                    {% endif %}     
+                    <h3><strong>{{QContent}}</strong></h3>
+                    {% if FilePath %}
+                        <br>
+                        <img src="{{ url_for('static', filename='desImg/') }}{{FilePath}}" alt="" height="300">
+                    {% endif %}  
+                    <div>
+                        {% if 'A' in ChooseAns %}
+                            <input type="checkbox" name={{QNo}} value="A" checked onclick="return false;"/>
+                        {% else %}
+                            <input type="checkbox" name={{QNo}} value="A"  onclick="return false;"/>
+                        {% endif %}
+                        <label for={{QNo}}>&nbsp;&nbsp;&nbsp;A: {{AAnsswer[1]}} </label>
+                    </div>
+                    
+                    <div>
+                        {% if 'B' in ChooseAns %}
+                            <input type="checkbox" name={{QNo}} value="B" checked  onclick="return false;"/>
+                        {% else %}
+                            <input type="checkbox" name={{QNo}} value="B"  onclick="return false;"/>
+                        {% endif %}
+                        <label for={{QNo}}>&nbsp;&nbsp;&nbsp;B: {{BAnsswer[1]}}</label>
+                    </div>
+                    
+                    <div>
+                        {% if 'C' in ChooseAns %}
+                            <input type="checkbox" name={{QNo}} value="C" checked  onclick="return false;"/>
+                        {% else %}
+                            <input type="checkbox" name={{QNo}} value="C"  onclick="return false;"/>
+                        {% endif %}
+                        <label for={{QNo}}>&nbsp;&nbsp;&nbsp;C: {{CAnsswer[1]}}</label>
+                    </div>
+                    
+                    <div>
+                        {% if 'D' in ChooseAns %}
+                            <input type="checkbox" name={{QNo}} value="D" checked  onclick="return false;"/>
+                        {% else %}
+                            <input type="checkbox" name={{QNo}} value="D"  onclick="return false;"/>
+                        {% endif %}
+                        <label for={{QNo}}>&nbsp;&nbsp;&nbsp;D:{{DAnsswer[1]}}</label>
+                    </div>
+
+                    {% if EAnsswer[1] != None %}
+                    <div>
+                        {% if 'D' in ChooseAns %}
+                            <input type="checkbox" name={{QNo}} value="D" checked  onclick="return false;"/>
+                        {% else %}
+                            <input type="checkbox" name={{QNo}} value="D"  onclick="return false;"/>
+                        {% endif %}
+                        <label for={{QNo}}>&nbsp;E: {{EAnsswer[1]}}</label>
+                    </div>
+                    {% endif %}
+
+                    <h3>Đáp án chính xác là: {{CorrectAns}}</h3>
+                    {% if CheckSol == "Chính xác" %}
+                        <h3 style="color:green;">Câu trả lời chính xác</h3>
+                    {% endif %}
+                    {% if CheckSol == "Không chính xác" %}
+                        <h3 style="color:red;">Câu trả lời chưa chính xác</h3>
+                    {% endif %}
+                    {% if CheckSol == "Không hoàn thành" %}
+                        <h3 style="color:yellow;">Câu trả lời không được ghi nhận</h3>
+                    {% endif %}
+                    <hr size="2" width="100%" align="center">
+                </li>
+                {% endfor %}
+            </ol>
+            <div class="row justify-content-md-center">
+                <h3><strong>HẾT BÀI</strong></h3>
+            </div>
+            <br>
+            <div class="row justify-content-md-center">
+                <input type="text" size="50" name="note" placeholder="Nhập ghi chú cho bài kiểm tra này">
+            </div>
+            <br>
+            <div class="row justify-content-md-center">
+                <button class="btn btn-warning" type="submit">Lưu ghi chú</button>
+            </div>
+        </form>
+      </div>
+
+    
+    <br><br>
+    <!-- Begin footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>MCQs and Exams Bank</h3>
+                        </div>
+						<p> This is web app made by group 7 for Database design assignment</p>
+						<p> Lecturer: Dr. Vo Thi Ngoc Chau</p>   
+						<div class="footer-right">
+							
+						</div>						
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+                <div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>Chi tiết liên hệ</h3>
+                        </div>
+
+                        <!-- <ul class="footer-links">
+                            <li><a href="mailto:#">info@yoursite.com</a></li>
+                            <li><a href="#">www.yoursite.com</a></li>
+                            <li>PO Box 16122 Collins Street West Victoria 8007 Australia</li>
+                            <li>+61 3 8376 6284</li>
+                        </ul> -->
+                        <!-- end links -->
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </footer><!-- end footer -->
+
+    <div class="copyrights">
+        <div class="container">
+            <div class="footer-distributed">
+                <div class="footer-center">                   
+                    <p class="footer-company-name">All Rights Reserved. &copy; 2020 <a href="#">MCQs and Exams Bank</a></p>
+                </div>
+            </div>
+        </div><!-- end container -->
+    </div><!-- end copyrights -->
+
+    <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+
+    <!-- ALL JS FILES -->
+    <script src="{{ url_for('static', filename='js/all.js') }}"></script>
+    <!-- ALL PLUGINS -->
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/timeline.min.js') }}"></script>
+	<script>
+		timeline(document.querySelectorAll('.timeline'), {
+			forceVerticalMode: 700,
+			mode: 'horizontal',
+			verticalStartPosition: 'left',
+			visibleItems: 4
+		});
+    </script>
+</body>
+</html>

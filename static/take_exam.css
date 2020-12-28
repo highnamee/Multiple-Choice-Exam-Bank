@@ -1,0 +1,23 @@
+#page-wrap		    { width: 500px; margin: 0 auto; }
+
+#quiz input {
+    vertical-align: middle;
+    transform: scale(1.5)
+}
+
+#quiz ol {
+   margin: 0 0 10px 20px;
+   font-size: 17px;
+}
+
+#quiz ol li {
+   margin: 0 0 30px 0;
+}
+
+#quiz ol li div {
+   padding: 4px 0;
+}
+
+#quiz h3 {
+   font-size: 17px; margin: 0 0 1px 0; color: #000;
+}

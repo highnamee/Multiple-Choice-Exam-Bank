@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+   
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+     <!-- Site Metas -->
+    <title>HCMUT MCQS</title>  
+
+	<!-- Site Icons -->
+	<link rel="icon" type="image/png" href="../static//loginCssStyle/images/icons/LogoBK.ico"/>
+    <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!-- ALL VERSION CSS -->
+    <link rel="stylesheet" href="../static/css/versions.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="../static/css/responsive.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/custom.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='loginCssStyle/css/util.css') }}">
+
+    <!-- Modernizer for Portfolio -->
+    <script src="../static/js/modernizer.js"></script>
+</head>
+<body class="host_version"> 
+
+    <!-- LOADER -->
+	<div id="preloader">
+		<div class="loader-container">
+			<div class="progress-br float shadow">
+				<div class="progress__item"></div>
+			</div>
+		</div>
+	</div>
+	<!-- END LOADER -->	
+	
+	<!-- Start header -->
+	<header class="top-navbar">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#">
+					<img src="../static/img/LogoBK.ico" alt="LogoBK" style="width:50px;height:50px;" />
+                </a>
+                <ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link" href="index.html">HCMUT Multiple choice exam bank system</a></li>
+				</ul>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbars-host">
+					<ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link" href="/">Bach Khoa</a></li>
+						<li class="nav-item"><a class="nav-link" href="/lec">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Xin chào {{user.username}}</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+                        <li><a href="{{ url_for('logout') }}" class="hover-btn-new"><span>Đăng xuất</span></a></li>
+                    </ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+    <!-- End header -->
+
+    <div class="container">
+        <div class="pricing-table-header" style="text-align: center;">
+            <h2 style="color: #263238; font-size: 25px; padding-bottom: 5px;">{{ subInfo[1] }} ({{ subInfo[0] }})</h2>
+            <h3>Câu hỏi: {{ quesInfo[0][:3] }}</h3>
+        </div>
+        {% if isAuthor == True %}
+            <div class="row">
+                <div class="pricing-table-space" style="margin: 0 2% 5% 83%;">
+                    {% if quesInfo[3] == 4 %}
+                        <a role="button" class="btn btn-info" href="{{ url_for('editQuestion4', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = quesInfo[0]) }}">Chỉnh sửa</a>
+                    {% else %}
+                        <a role="button" class="btn btn-info" href="{{ url_for('editQuestion5', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = quesInfo[0]) }}">Chỉnh sửa</a>
+                    {% endif %}
+                </div>
+                <div class="pricing-table-space" style="margin-bottom: 5%;">
+                    <a role="button" href="{{ url_for('delQuestion', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = quesInfo[0]) }}" class="btn btn-info" style="background-color: red; border-color: red;" >Xóa</a>
+                </div>
+            </div>
+            
+        {% endif %}
+        <div class="post-content" >
+            <div class="blog-desc">
+                <div class="widget-tags col-md-12">
+                    <div class="row">
+                        <h3 style="font-size: 18px" class="widget-title col-md-4"><b>Cấp độ: </b>
+                            {% if quesInfo[2] == 'Dễ' %}
+                                <label style="margin-left: 5px; font-size: 18px" class="btn btn-success">{{ quesInfo[2] }}</label>
+                            {% elif quesInfo[2] == 'Trung bình' %}
+                                <label style="margin-left: 5px; font-size: 18px" class="btn btn-warning">{{ quesInfo[2] }}</label>
+                            {% else %}
+                                <label style="margin-left: 5px; font-size: 18px" class="btn btn-danger">{{ quesInfo[2] }}</label>
+                            {% endif %}
+                        </h3>
+                        <h3 style="font-size: 18px" class="widget-title col-md-4"><b>Chuẩn đầu ra: </b>{{ quesInfo[8] }}</h3>
+                        <h3 style="font-size: 18px" class="widget-title col-md-4"><b>Loại: </b>{{ quesInfo[3] }} lựa chọn</h3>
+                    </div>
+                </div>                
+                <div class="post-date" style="margin-top: 30px;">
+                    <span class="day"><b>Người tạo: </b>{{ lecInfo[0] + ' ' + lecInfo[1] }}</span>
+                    <span class="month"><b>Cập nhật lần cuối: </b>{{ quesInfo[7] }}</span>
+                </div>
+                
+                <div class="blog-item" style="margin-top: 100px">
+                    <blockquote class="default" style="font-size: 18px;">
+                        <b>Nội dung câu hỏi: </b>{{ quesInfo[1] }}
+                    </blockquote>
+                    {% if quesInfo[5] %}
+                        <img src="{{ url_for('static', filename='desImg/') }}{{ quesInfo[5] }}" alt="Mô tả câu hỏi" width="800px" class="aligncenter"/>
+                    {% endif %}
+                    <div style="padding-left: 5%">
+                        {% for choice in choiceList %}
+                            <h3 style="font-size: 16px; padding: 10px 0 10px 0;"><b style="color: #1fb299">{{ choice[1] }}. </b>{{ choice[2] }}</h3>
+                            {% if choice[3] %}
+                                <img src="{{ url_for('static', filename='desImg/') }}{{ choice[3] }}" alt="Mô tả lựa chọn" height="300px"/>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <label style="font-size: 16px; margin-top: 20px;" class="btn btn-danger"><b>Lựa chọn đúng: </b>{{ quesInfo[4] }}</label>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <br><br><hr>
+    <!-- Begin footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>MCQs and Exams Bank</h3>
+                        </div>
+						<p> This is web app made by group 7 for Database design assignment</p>
+						<p> Lecturer: Dr. Vo Thi Ngoc Chau</p>   
+						<div class="footer-right">
+							
+						</div>						
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+                <div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>Chi tiết liên hệ</h3>
+                        </div>
+
+                        <!-- <ul class="footer-links">
+                            <li><a href="mailto:#">info@yoursite.com</a></li>
+                            <li><a href="#">www.yoursite.com</a></li>
+                            <li>PO Box 16122 Collins Street West Victoria 8007 Australia</li>
+                            <li>+61 3 8376 6284</li>
+                        </ul> -->
+                        <!-- end links -->
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+            </div><!-- end row -->
+        </div><!-- end container -->
+	</footer><!-- end footer -->
+	
+    <div class="copyrights">
+        <div class="container">
+            <div class="footer-distributed">
+                <div class="footer-center">                   
+                    <p class="footer-company-name">All Rights Reserved. &copy; 2020 <a href="#">MCQs and Exams Bank</a></p>
+                </div>
+            </div>
+        </div><!-- end container -->
+    </div><!-- end copyrights -->
+
+    <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+
+    <!-- ALL JS FILES -->
+    <script src="../static/js/all.js"></script>
+    <!-- ALL PLUGINS -->
+    <script src="../static/js/custom.js"></script>
+	<script src="../static/js/timeline.min.js"></script>
+	<script>
+		timeline(document.querySelectorAll('.timeline'), {
+			forceVerticalMode: 700,
+			mode: 'horizontal',
+			verticalStartPosition: 'left',
+			visibleItems: 4
+		});
+	</script>
+</body>
+</html>

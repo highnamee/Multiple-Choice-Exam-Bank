@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+   
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+     <!-- Site Metas -->
+    <title>HCMUT MCQS</title>  
+
+	<!-- Site Icons -->
+	<link rel="icon" type="image/png" href="../static//loginCssStyle/images/icons/LogoBK.ico"/>
+    <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!-- ALL VERSION CSS -->
+    <link rel="stylesheet" href="../static/css/versions.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="../static/css/responsive.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/custom.css">
+
+    <!-- Modernizer for Portfolio -->
+    <script src="../static/js/modernizer.js"></script>
+</head>
+<body class="host_version"> 
+
+    <!-- LOADER -->
+	<div id="preloader">
+		<div class="loader-container">
+			<div class="progress-br float shadow">
+				<div class="progress__item"></div>
+			</div>
+		</div>
+	</div>
+	<!-- END LOADER -->	
+	
+	<!-- Start header -->
+	<header class="top-navbar">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#">
+					<img src="../static/img/LogoBK.ico" alt="LogoBK" style="width:50px;height:50px;" />
+                </a>
+                <ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link" href="index.html">HCMUT Multiple choice exam bank system</a></li>
+				</ul>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbars-host">
+					<ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link" href="/">Bach Khoa</a></li>
+						<li class="nav-item"><a class="nav-link" href="/lec">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Xin chào {{user.username}}</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+                        <li><a href="{{ url_for('logout') }}" class="hover-btn-new"><span>Đăng xuất</span></a></li>
+                    </ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<!-- End header -->
+
+    <div class="container">
+        <div>
+            <div class="pricing-table-header" style="text-align: center">
+                <h2 style="color: #263238; font-size: 25px; padding-bottom: 5px;">{{ subInfo[1] }} ({{ subInfo[0] }})</h2>
+            </div>
+            {% if subInfo[2] == 'Incharge' %}
+            <div class="row">
+                <div class="pricing-table-space col-md-2" style="margin-bottom: 5%;">
+                    <a role="button" class="btn btn-info" href="{{ url_for('addQuestion4', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2]) }}">Tạo câu hỏi mới (4 lựa chọn)</a>
+                </div>
+                <div class="pricing-table-space col-md-2" style="margin-left: 5%; margin-bottom: 5%;">
+                    <a role="button" class="btn btn-info" href="#">Tạo câu hỏi mới (5 lựa chọn)</a>
+                </div>
+            </div>
+            {% endif %}
+            
+        </div>
+        <div class="row">
+                <div class="modal-body customer-box">
+                    <div class="card card-body">
+                        <table class="table">
+                        <thead>
+                            <tr class="table-success">
+                                <th scope="col"></th>
+                                <th scope="col">Mã câu hỏi</th>
+                                <th scope="col">Nội dung</th>
+                                <th scope="col">Cấp độ</th>
+                                <th scope="col">Chuẩn đầu ra</th>
+                                <th scope="col">Người tạo</th>
+                                <th scope="col">Cập nhật lần cuối</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                
+                        <tbody>
+                            {% for q in quesList %}
+                            <tr>
+                                <td><i class="fa fa-caret-right" style="color: #1fb299"></i></td>
+                                <td><a href="{{ url_for('question', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = q[0]) }}">{{ q[0] }}</a></td>
+                                <td>{{ q[1] }}</td>
+                                <td>{{ q[2] }}</td>
+                                <td>{{ q[8] }}</td>
+                                <td>{{ q[12] + ' ' + q[13] }}</td>
+                                <td>{{ q[7] }}</td>
+                                <td>
+                                    {% if q[6] == user.ID %}
+                                        <a href="{{ url_for('question', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = q[0]) }}"><i class="fa fa-edit" style="font-size: 16px; color: #1fb299"></i></a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if q[6] == user.ID %}
+                                        <a href="{{ url_for('question', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = q[0]) }}"><i class="fa fa-trash" style="font-size: 16px; color: red"></i></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+        </div><!--end row-->
+    </div><!--end container-->
+
+    <br><br><hr>
+    <!-- Begin footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>MCQs and Exams Bank</h3>
+                        </div>
+						<p> This is web app made by group 7 for Database design assignment</p>
+						<p> Lecturer: Dr. Vo Thi Ngoc Chau</p>   
+						<div class="footer-right">
+							
+						</div>						
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+                <div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>Chi tiết liên hệ</h3>
+                        </div>
+
+                        <!-- <ul class="footer-links">
+                            <li><a href="mailto:#">info@yoursite.com</a></li>
+                            <li><a href="#">www.yoursite.com</a></li>
+                            <li>PO Box 16122 Collins Street West Victoria 8007 Australia</li>
+                            <li>+61 3 8376 6284</li>
+                        </ul> -->
+                        <!-- end links -->
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+            </div><!-- end row -->
+        </div><!-- end container -->
+	</footer><!-- end footer -->
+	
+    <div class="copyrights">
+        <div class="container">
+            <div class="footer-distributed">
+                <div class="footer-center">                   
+                    <p class="footer-company-name">All Rights Reserved. &copy; 2020 <a href="#">MCQs and Exams Bank</a></p>
+                </div>
+            </div>
+        </div><!-- end container -->
+    </div><!-- end copyrights -->
+
+    <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+
+    <!-- ALL JS FILES -->
+    <script src="../static/js/all.js"></script>
+    <!-- ALL PLUGINS -->
+    <script src="../static/js/custom.js"></script>
+	<script src="../static/js/timeline.min.js"></script>
+	<script>
+		timeline(document.querySelectorAll('.timeline'), {
+			forceVerticalMode: 700,
+			mode: 'horizontal',
+			verticalStartPosition: 'left',
+			visibleItems: 4
+		});
+	</script>
+</body>
+</html>

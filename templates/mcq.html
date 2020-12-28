@@ -9,10 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
  
      <!-- Site Metas -->
-    <title>Câu hỏi trắc nghiệm</title>  
+    <title>HCMUT MCQS</title>  
 
-    <!-- Site Icons -->
-    <!-- <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" /> -->
+	<!-- Site Icons -->
+	<link rel="icon" type="image/png" href="../static//loginCssStyle/images/icons/LogoBK.ico"/>
     <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
 
     <!-- Bootstrap CSS -->
@@ -32,49 +32,6 @@
 </head>
 <body class="host_version"> 
 
-	<!-- Modal -->
-	<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-header tit-up">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h1 class="modal-title">ĐĂNG NHẬP</h1>
-			</div>
-			<div class="modal-body customer-box">
-				<!-- Nav tabs -->
-				<!-- <ul class="nav nav-tabs">
-					<li><a class="active" href="#Login" data-toggle="tab">Đăng nhập</a></li>
-				</ul> -->
-				<!-- Tab panes -->
-				<div class="tab-content">
-					<div class="tab-pane active" id="Login">
-						<form role="form" class="form-horizontal">
-							<div class="form-group">
-								<div class="col-sm-12">
-									<input class="form-control" id="email1" placeholder="Email" type="email">
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-12">
-									<input class="form-control" id="exampleInputPassword1" placeholder="Mật khẩu" type="password">
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-10">
-									<button type="submit" class="btn btn-light btn-radius btn-brd grd1">
-										Đăng nhập
-									</button>
-									<a class="for-pwd" href="javascript:;">Quên mật khẩu?</a>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	  </div>
-	</div>
-
     <!-- LOADER -->
 	<div id="preloader">
 		<div class="loader-container">
@@ -89,9 +46,12 @@
 	<header class="top-navbar">
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="index.html">
-					<img src="images/logo.png" alt="" />
-				</a>
+				<a class="navbar-brand" href="#">
+					<img src="../static/img/LogoBK.ico" alt="LogoBK" style="width:50px;height:50px;" />
+                </a>
+                <ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link" href="index.html">HCMUT Multiple choice exam bank system</a></li>
+				</ul>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -99,14 +59,13 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbars-host">
 					<ul class="navbar-nav ml-auto">
-						<li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/">Bach Khoa</a></li>
+						<li class="nav-item"><a class="nav-link" href="/lec">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
-                        <li class="nav-item active"><a class="nav-link" href="/mcq">Câu hỏi trắc nghiệm</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/exam">Đề thi</a></li>
-						<li class="nav-item"><a class="nav-link" href="/contact">Liên hệ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Xin chào {{user.username}}</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-                        <li><a class="hover-btn-new log" href="#" data-toggle="modal" data-target="#login"><span>Đăng nhập</span></a></li>
+                        <li><a href="{{ url_for('logout') }}" class="hover-btn-new"><span>Đăng xuất</span></a></li>
                     </ul>
 				</div>
 			</div>
@@ -114,33 +73,53 @@
 	</header>
 	<!-- End header -->
 
+	<div class="container" style="min-height: 400px;">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="modal-body customer-box">
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs" >
+						<li><a style="font-size: 16px" class="active" href="#MgrSub" data-toggle="tab"><strong>DANH SÁCH MÔN HỌC QUẢN LÝ</strong></a></li>
+						<li><a style="font-size: 16px" href="#InchrSub" data-toggle="tab"><strong>DANH SÁCH MÔN HỌC PHỤ TRÁCH</strong></a></li>
+					</ul>
+					<!-- Tab panes -->
+					<div class="tab-content">
+						<div class="tab-pane active" id="MgrSub">
+							{% for SubCode, SubName in mgrSub %}
+							<div class="message-box" style="padding-left: 10px; margin-bottom: 8px;">
+								<a href="{{ url_for('subject', subCode = SubCode, subName = SubName, lecType = 'Manage') }}">{{ SubName }} ({{ SubCode }})</a>
+							</div>
+							{% endfor %}
+						</div>
+						<div class="tab-pane" id="InchrSub">
+							{% for SubCode, SubName in inchrSub %}
+							<div class="message-box" style="padding-left: 10px; margin-bottom: 8px;">
+								<a href="{{ url_for('subject', subCode = SubCode, subName = SubName, lecType = 'Incharge') }}">{{ SubName }} ({{ SubCode }})</a>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div> <!-- end col -->
+		</div> <!-- end row -->
+		
+	</div> <!-- end container -->
+
+    <br><br><br>
+    <!-- Begin footer -->
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-xs-12">
+                <div class="col-lg-8 col-md-8 col-xs-12">
                     <div class="widget clearfix">
                         <div class="widget-title">
                             <h3>MCQs and Exams Bank</h3>
                         </div>
-                        <p> ... </p>   
+						<p> This is web app made by group 7 for Database design assignment</p>
+						<p> Lecturer: Dr. Vo Thi Ngoc Chau</p>   
 						<div class="footer-right">
 							
 						</div>						
-                    </div><!-- end clearfix -->
-                </div><!-- end col -->
-
-				<div class="col-lg-4 col-md-4 col-xs-12">
-                    <div class="widget clearfix">
-                        <div class="widget-title">
-                            <h3>Danh mục</h3>
-                        </div>
-                        <ul class="footer-links">
-                            <li><a href="/">Trang chủ</a></li>
-                            <li><a href="/about">Giới thiệu</a></li>
-                            <li><a href="/mcq">Câu hỏi trắc nghiệm</a></li>
-							<li><a href="/exam">Đề thi</a></li>
-							<li><a href="/contact">Liên hệ</a></li>
-                        </ul><!-- end links -->
                     </div><!-- end clearfix -->
                 </div><!-- end col -->
 				
@@ -162,8 +141,8 @@
 				
             </div><!-- end row -->
         </div><!-- end container -->
-    </footer><!-- end footer -->
-
+	</footer><!-- end footer -->
+	
     <div class="copyrights">
         <div class="container">
             <div class="footer-distributed">

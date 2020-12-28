@@ -718,6 +718,10 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Test
+-- CALL add_one_answer ('SV1810340', 'CO2017', '2020-03-15', '2001', 1, 2, 'ABC');
+-- CALL add_one_answer ('SV1810340', 'CO2017', '2020-03-15', '2001', 1, 1, 'B');
+
 -- PROCEDURE: add_student_task
 -- TO DO: insert student task into ANSWER (include NumCorrectAns and Mark which are calculated in application after student submit)
 DROP PROCEDURE IF EXISTS add_student_task;
@@ -728,6 +732,9 @@ BEGIN
     VALUES (StudentID, SubCode, ExamDate, ExamCode, AnsNum, NULL, NULL);
 END //
 DELIMITER ;
+
+-- Test
+-- CALL add_student_task ('SV1810340', 'CO2017', '2020-03-15', '2001', 1);
 
 -- FUNCTION: calculate_mark
 -- TO DO: calculate mark of student answer in an exam at exam time

@@ -94,6 +94,26 @@ class lecturerUtils:
     def __del__(self):
         self.connection.close()
 
+    ## LA begin
+    # View subject list that lecturer in charge
+    def viewInchrSubject(self, lecID):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT Subject_Code, Name FROM LEC_INCHARGE_SUB JOIN SUBJECT ON Subject_Code = Inchr_Subject_Code WHERE Inchr_Lecturer_ID = '%s'" % lecID)
+            inchrSub = cursor.fetchall()
+            cursor.close()
+            return inchrSub
+
+    # View subject list that lecturer manage
+    def viewMgrSubject(self, lecID):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT Subject_Code, Name FROM SUBJECT WHERE Mgr_Lecturer_ID = '%s'" % lecID)
+            mgrSub = cursor.fetchall()
+            cursor.close()
+            return mgrSub
+    ## LA end
+
 if __name__ == "__main__":
     newUtils = lecturerUtils()
 

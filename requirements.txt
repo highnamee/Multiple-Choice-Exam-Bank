@@ -1,0 +1,20 @@
+CHANGE:
+    static/css/style.css
+    templates/index_lec.html
+    templates/mcq.html
+    templates/exam.html (don''t care)
+    app.py
+    Utils/lecturerUtils.py
+    Utils/lecturerInChargeUtils.py
+
+
+NEW: 
+    static/fonts/
+    static/desImg/
+    templates/mcq_subject.html
+    templates/question_form4.html
+    templates/question.html
+    templates/ques_eform4.html
+    templates/exam_subject.html (don''t care)
+
+

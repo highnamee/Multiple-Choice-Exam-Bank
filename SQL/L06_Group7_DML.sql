@@ -215,7 +215,7 @@ SET Described_Content_ID = 'D1'
 WHERE Description_ID = '001CO2017';
 
 INSERT INTO EXAM_TIME
-VALUES ('CO2017', '2020-03-15', '192');
+VALUES ('CO2017', '2020-03-15', '192', NULL);
 UPDATE EXAM_TIME
 SET Content = 'Kiểm tra cuối kỳ Hệ điều hành'
 WHERE Subject_Code = 'CO2017' and Exam_Date = '2020-03-15';

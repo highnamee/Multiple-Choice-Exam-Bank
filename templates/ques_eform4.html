@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">   
+   
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+     <!-- Site Metas -->
+    <title>HCMUT MCQS</title>  
+
+	<!-- Site Icons -->
+	<link rel="icon" type="image/png" href="../static//loginCssStyle/images/icons/LogoBK.ico"/>
+    <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!-- ALL VERSION CSS -->
+    <link rel="stylesheet" href="../static/css/versions.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="../static/css/responsive.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/custom.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='loginCssStyle/css/util.css') }}">
+
+    <!-- Modernizer for Portfolio -->
+    <script src="../static/js/modernizer.js"></script>
+</head>
+<body class="host_version"> 
+
+    <!-- LOADER -->
+	<div id="preloader">
+		<div class="loader-container">
+			<div class="progress-br float shadow">
+				<div class="progress__item"></div>
+			</div>
+		</div>
+	</div>
+	<!-- END LOADER -->	
+	
+	<!-- Start header -->
+	<header class="top-navbar">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#">
+					<img src="../static/img/LogoBK.ico" alt="LogoBK" style="width:50px;height:50px;" />
+                </a>
+                <ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link" href="index.html">HCMUT Multiple choice exam bank system</a></li>
+				</ul>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbars-host">
+					<ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link" href="/">Bach Khoa</a></li>
+						<li class="nav-item"><a class="nav-link" href="/lec">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/about">Giới thiệu</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Xin chào {{user.username}}</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+                        <li><a href="{{ url_for('logout') }}" class="hover-btn-new"><span>Đăng xuất</span></a></li>
+                    </ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+    <!-- End header -->
+
+    <div class="container">
+        <div class="pricing-table-header" style="text-align: center;">
+            <h2 style="color: #263238; font-size: 25px; padding-bottom: 5px;">{{ subInfo[1] }} ({{ subInfo[0] }})</h2>
+            <h3>Câu hỏi: {{ quesInfo[0][:3] }}</h3>
+        </div>
+    </div>
+    <div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100" style="margin: 5% 0 5% 0;">
+				<form action="{{ url_for('editQuestion4', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = quesInfo[0]) }}" method="POST" class="login100-form" id="qform" enctype=multipart/form-data>
+					<div class="wrap-input100 m-b-26">
+						<span class="label-input100"><b>Nội dung câu hỏi</b></span>
+                        <textarea class="textarea100" rows="10" cols="60" name="content" form="qform" placeholder="Nhập câu hỏi" required>{{ quesInfo[1] }}</textarea>
+						<span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-select100 m-b-18">
+						<span class="label-input100"><b><i>Mô tả câu hỏi</b></i></span>
+                        <input class="textarea100" style="width: 25px;" type="file" name="qDes">
+                        {% if quesInfo[5] %}
+                            <p style="font-size: 16px;"><b>File mô tả đã tồn tại: </b>{{ quesInfo[5] }}</p>
+                        {% endif %}
+					</div>
+
+					<div class="wrap-select100 m-b-18">
+                        <span class="label-input100"><b>Cấp độ</b></span>
+                        <select style="margin-top: 12px" name="level" id="level" required>
+                            <option value=""></option>
+                            {% if quesInfo[2] == 'Dễ' %}
+                                <option selected="selected" value="Dễ">Dễ</option>
+                                <option value="Trung bình">Trung bình</option>
+                                <option value="Khó">Khó</option>
+                            {% elif quesInfo[2] == 'Trung bình' %}
+                                <option value="Dễ">Dễ</option>
+                                <option selected="selected" value="Trung bình">Trung bình</option>
+                                <option value="Khó">Khó</option>
+                            {% else %}
+                                <option value="Dễ">Dễ</option>
+                                <option value="Trung bình">Trung bình</option>
+                                <option selected="selected" value="Khó">Khó</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="wrap-select100 m-b-18">
+                        <span class="label-input100"><b>Chuẩn đầu ra</b></span>
+                        <select style="margin-top: 12px" name="outcome" id="outcome" required>
+                            <option value=""></option>
+                            {% for oc in ocList %}
+                                {% if oc[0] == quesInfo[8] %}
+                                    <option selected="selected" value="{{ oc[0] }}">{{ oc[0] }}</option>
+                                {% else %}
+                                    <option value="{{ oc[0] }}">{{ oc[0] }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="wrap-input100 m-b-26">
+						<span class="label-input100"><b>Lựa chọn 1</b></span>
+                        <textarea class="textarea100" rows="2" cols="60" name="choice1" form="qform" placeholder="Nhập lựa chọn 1" required>{{ choiceList[0][2] }}</textarea>
+						<span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-select100 m-b-18">
+						<span class="label-input100"><b><i>Mô tả lựa chọn 1</b></i></span>
+                        <input class="textarea100" style="width: 25px;" type="file" name="chDes1">
+                        {% if choiceList[0][3] %}
+                            <p style="font-size: 16px;"><b>File mô tả đã tồn tại: </b>{{ choiceList[0][3] }}</p>
+                        {% endif %}
+					</div>
+                    
+                    <div class="wrap-input100 m-b-26">
+						<span class="label-input100"><b>Lựa chọn 2</b></span>
+                        <textarea class="textarea100" rows="2" cols="60" name="choice2" form="qform" placeholder="Nhập lựa chọn 2" required>{{ choiceList[1][2] }}</textarea>
+						<span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-select100 m-b-18">
+						<span class="label-input100"><b><i>Mô tả lựa chọn 2</b></i></span>
+                        <input class="textarea100" style="width: 25px;" type="file" name="chDes2">
+                        {% if choiceList[1][3] %}
+                            <p style="font-size: 16px;"><b>File mô tả đã tồn tại: </b>{{ choiceList[1][3] }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="wrap-input100 m-b-26">
+						<span class="label-input100"><b>Lựa chọn 3</b></span>
+                        <textarea class="textarea100" rows="2" cols="60" name="choice3" form="qform" placeholder="Nhập lựa chọn 3" required>{{ choiceList[2][2] }}</textarea>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-select100 m-b-18">
+						<span class="label-input100"><b><i>Mô tả lựa chọn 3</b></i></span>
+                        <input class="textarea100" style="width: 25px;" type="file" name="chDes3">
+                        {% if choiceList[2][3] %}
+                            <p style="font-size: 16px;"><b>File mô tả đã tồn tại: </b>{{ choiceList[2][3] }}</p>
+                        {% endif %}
+					</div>
+
+                    <div class="wrap-input100 m-b-26">
+						<span class="label-input100"><b>Lựa chọn 4</b></span>
+                        <textarea class="textarea100" rows="2" cols="60" name="choice4" form="qform" placeholder="Nhập lựa chọn 4" required>{{ choiceList[3][2] }}</textarea>
+						<span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-select100 m-b-18">
+						<span class="label-input100"><b><i>Mô tả lựa chọn 4</b></i></span>
+                        <input class="textarea100" style="width: 25px;" type="file" name="chDes4">
+                        {% if choiceList[3][3] %}
+                            <p style="font-size: 16px;"><b>File mô tả đã tồn tại: </b>{{ choiceList[3][3] }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="wrap-select100 m-b-26">
+                        <span class="label-input100"><b>Lựa chọn đúng</b></span>
+                        <div class="row">
+                            {% if 'A' in quesInfo[4] %}
+                                <input type="checkbox" id="correctCh1" name="correctCh1" value="A" style="margin: 16px 0 0 20px;" checked>
+                            {% else %}
+                                <input type="checkbox" id="correctCh1" name="correctCh1" value="A" style="margin: 16px 0 0 20px;">
+                            {% endif %}
+                            <label for="correctCh1" style="padding: 10px 0 0 10px">A</label><br>
+                        </div>
+                        <div class="row">
+                            {% if 'B' in quesInfo[4] %}
+                                <input type="checkbox" id="correctCh2" name="correctCh2" value="B" style="margin: 16px 0 0 20px;" checked>
+                            {% else %}
+                                <input type="checkbox" id="correctCh2" name="correctCh2" value="B" style="margin: 16px 0 0 20px;">
+                            {% endif %}
+                            <label for="correctCh2" style="padding: 10px 0 0 10px">B</label><br>
+                        </div>
+                        <div class="row">
+                            {% if 'C' in quesInfo[4] %}
+                                <input type="checkbox" id="correctCh3" name="correctCh3" value="C" style="margin: 16px 0 0 20px;" checked>
+                            {% else %}
+                                <input type="checkbox" id="correctCh3" name="correctCh3" value="C" style="margin: 16px 0 0 20px;">
+                            {% endif %}
+                            <label for="correctCh3" style="padding: 10px 0 0 10px">C</label><br>
+                        </div>
+                        <div class="row">
+                            {% if 'D' in quesInfo[4] %}
+                                <input type="checkbox" id="correctCh4" name="correctCh4" value="D" style="margin: 16px 0 0 20px;" checked>
+                            {% else %}
+                                <input type="checkbox" id="correctCh4" name="correctCh4" value="D" style="margin: 16px 0 0 20px;">
+                            {% endif %}
+                            <label for="correctCh4" style="padding: 10px 0 0 10px">D</label><br>
+                        </div>
+                        
+						<span class="focus-input100"></span>
+                    </div>
+					<div class="container-login100-form-btn">
+						<button type="submit" class="login100-form-btn">
+							Lưu
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+    
+    
+    <br><br><hr>
+    <!-- Begin footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>MCQs and Exams Bank</h3>
+                        </div>
+						<p> This is web app made by group 7 for Database design assignment</p>
+						<p> Lecturer: Dr. Vo Thi Ngoc Chau</p>   
+						<div class="footer-right">
+							
+						</div>						
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+                <div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="widget clearfix">
+                        <div class="widget-title">
+                            <h3>Chi tiết liên hệ</h3>
+                        </div>
+                    </div><!-- end clearfix -->
+                </div><!-- end col -->
+				
+            </div><!-- end row -->
+        </div><!-- end container -->
+	</footer><!-- end footer -->
+	
+    <div class="copyrights">
+        <div class="container">
+            <div class="footer-distributed">
+                <div class="footer-center">                   
+                    <p class="footer-company-name">All Rights Reserved. &copy; 2020 <a href="#">MCQs and Exams Bank</a></p>
+                </div>
+            </div>
+        </div><!-- end container -->
+    </div><!-- end copyrights -->
+
+    <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+
+    <!-- ALL JS FILES -->
+    <script src="../static/js/all.js"></script>
+    <!-- ALL PLUGINS -->
+    <script src="../static/js/custom.js"></script>
+	<script src="../static/js/timeline.min.js"></script>
+	<script>
+		timeline(document.querySelectorAll('.timeline'), {
+			forceVerticalMode: 700,
+			mode: 'horizontal',
+			verticalStartPosition: 'left',
+			visibleItems: 4
+		});
+	</script>
+</body>
+</html>

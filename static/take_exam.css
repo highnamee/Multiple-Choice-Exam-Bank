@@ -7,11 +7,13 @@
 
 #quiz ol {
    margin: 0 0 10px 20px;
-   font-size: 17px;
+   font-family: 'Segoe UI', sans-serif;
+   list-style-type: decimal;
 }
 
 #quiz ol li {
-   margin: 0 0 30px 0;
+   margin: 0 10px;
+   padding: 0 10px;
 }
 
 #quiz ol li div {

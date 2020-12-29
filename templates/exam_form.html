@@ -26,8 +26,16 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/custom.css">
 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='loginCssStyle/css/util.css') }}">
+
     <!-- Modernizer for Portfolio -->
     <script src="../static/js/modernizer.js"></script>
+    <style> 
+        input.largerCheckbox { 
+            width: 15px; 
+            height: 15px; 
+        } 
+    </style> 
 </head>
 <body class="host_version"> 
 
@@ -70,68 +78,70 @@
 			</div>
 		</nav>
 	</header>
-	<!-- End header -->
+    <!-- End header -->
 
     <div class="container">
-        <div>
-            <div class="pricing-table-header" style="text-align: center">
-                <h2 style="color: #263238; font-size: 25px; padding-bottom: 5px;">{{ subInfo[1] }} ({{ subInfo[0] }})</h2>
-            </div>
-            {% if lecInfo[1] == 'Chính' %}
-            <div class="row">
-                <div class="pricing-table-space col-md-2" style="margin-bottom: 5%;">
-                    <a role="button" class="btn btn-info" href="{{ url_for('createExam', subCode = subInfo[0], subName = subInfo[1], lecType = lecInfo[0]) }}">Tạo đề thi mới</a>
-                </div>
-            </div>
-            {% endif %}
-            
+        <div class="pricing-table-header" style="text-align: center;">
+            <h2 style="color: #263238; font-size: 25px; padding-bottom: 5px;">{{ subInfo[1] }} ({{ subInfo[0] }})</h2>
+            <h3>Đề thi</h3>
         </div>
-        <div class="row">
-                <div class="modal-body customer-box">
-                    <div class="card card-body">
-                        <table class="table">
+    </div>
+    <div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100" style="margin: 5% 0 5% 0; width: 1200px;">
+				<form action="{{ url_for('createExam', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2]) }}" method="POST" class="login100-form" id="qform" enctype=multipart/form-data>
+					<div class="wrap-select100 m-b-18">
+                        <span class="label-input100"><b>Ngày kiểm tra</b></span>
+                        <select style="margin-top: 12px" name="examtime" id="examtime" required>
+                            <option value=""></option>
+                            {% for ext in extimeList %}
+                            <option value="{{ ext[0] }}">{{ ext[0] }}{{' / Học kỳ ' + ext[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <br>
+
+					<table class="table">
                         <thead>
                             <tr class="table-success">
                                 <th scope="col"></th>
-                                <th scope="col">Mã đề</th>
-                                <th scope="col">Học kỳ</th>
-                                <th scope="col">Ngày kiểm tra</th>
-                                <th scope="col">Nội dung kiểm tra</th>
+                                <th scope="col">Mã câu hỏi</th>
+                                <th scope="col">Nội dung</th>
+                                <th scope="col">Cấp độ</th>
+                                <th scope="col">Chuẩn đầu ra</th>
                                 <th scope="col">Người tạo</th>
-                                <th scope="col">Trạng thái</th>
-                                <th scope="col"></th>
+                                <th scope="col">Cập nhật lần cuối</th>
                             </tr>
                         </thead>
-                
                         <tbody>
-                            {% for e in examList %}
-                            <tr>
-                                <td><i class="fa fa-caret-right" style="color: #1fb299"></i></td>
-                                <td><a href="{{ url_for('lecViewExam', subCode = subInfo[0], subName = subInfo[1], lecType = lecInfo[0], examDate = e[1], examCode = e[4]) }}">{{ e[4] }}</a></td>
-                                <td>{{ e[2] }}</td>
-                                <td>{{ e[1] }}</td>
-                                <td>{{ e[3] }}</td>
-                                <td>{{ e[11] + ' ' + e[12] }}</td>
-                                <td>
-                                    {% if e[5] %}
-                                        {{ e[5] }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if lecInfo[1] == 'Chính' %}
-                                        <a href="#"><i class="fa fa-edit" style="font-size: 16px; color: #1fb299"></i></a>
-                                    {% endif %}
-                                </td>
-                            </tr>
+                            {% for q in quesList %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="largerCheckbox" name="checkbox" value="{{ q[0]+','+q[4]+',' }}{{ q[3]}}">
+                                    </td>
+                                    <td><a href="{{ url_for('question', subCode = subInfo[0], subName = subInfo[1], lecType = subInfo[2], quesID = q[0]) }}">{{ q[0] }}</a></td>
+                                    <td>{{ q[1] }}</td>
+                                    <td>{{ q[2] }}</td>
+                                    <td>{{ q[8] }}</td>
+                                    <td>{{ q[12] + ' ' + q[13] }}</td>
+                                    <td>{{ q[7] }}</td>
+                                </tr>
                             {% endfor %}
                         </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-        </div><!--end row-->
-    </div><!--end container-->
+                    </table>
+					<div class="container-login100-form-btn">
+						<button type="submit" class="login100-form-btn">
+							Lưu
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
+    
+    
     <br><br><hr>
     <!-- Begin footer -->
     <footer class="footer">

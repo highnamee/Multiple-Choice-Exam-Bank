@@ -87,14 +87,14 @@
 						<div class="tab-pane active" id="MgrSub">
 							{% for SubCode, SubName in mgrSub %}
 							<div class="message-box" style="padding-left: 10px; margin-bottom: 8px;">
-								<a href="{{ url_for('subject', subCode = SubCode, subName = SubName, lecType = 'Manage') }}">{{ SubName }} ({{ SubCode }})</a>
+								<a href="{{ url_for('exam_subject', subCode = SubCode, subName = SubName, lecType = 'Manage') }}">{{ SubName }} ({{ SubCode }})</a>
 							</div>
 							{% endfor %}
 						</div>
 						<div class="tab-pane" id="InchrSub">
 							{% for SubCode, SubName in inchrSub %}
 							<div class="message-box" style="padding-left: 10px; margin-bottom: 8px;">
-								<a href="{{ url_for('subject', subCode = SubCode, subName = SubName, lecType = 'Incharge') }}">{{ SubName }} ({{ SubCode }})</a>
+								<a href="{{ url_for('exam_subject', subCode = SubCode, subName = SubName, lecType = 'Incharge') }}">{{ SubName }} ({{ SubCode }})</a>
 							</div>
 							{% endfor %}
 						</div>

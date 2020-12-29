@@ -11,7 +11,6 @@ class lecturerInChargeUtils:
         except Error as e:
             print("Error while connection to Mysql", e)
 
-    ## LA begin
     # Data req. 1
     # Update (insert/update/delete) questions for 1 subject
 
@@ -65,8 +64,6 @@ class lecturerInChargeUtils:
                 ChoiceID3, ChoiceCont3, CDesContID3, ChoiceID4, ChoiceCont4, CDesContID4])
             cursor.close()
 
-    ## LA end
-
     # Data req. 2
     # Create exam
 
@@ -74,20 +71,22 @@ class lecturerInChargeUtils:
         if self.connection.is_connected():
             cursor = self.connection.cursor()
             cursor.callproc('create_exam', [Sub_Code, Exam_Date, Exam_Code, Lecturer_Note, BC_Lecturer_ID])
-            newExam = Exam(Sub_Code, Exam_Date, Exam_Code, Lecturer_Note, BC_Lecturer_ID,NULL,NULL,NULL)
             cursor.close()
 
     # add question to exam
     
-    def addQuestionToExam(self,Question_ID, Sub_Code, Exam_Date, Exam_Code, Level, Question_No,\
-        Mix_Option, Mix_Correct_Choice_IDs, Number_Of_Choices):
+    def addQuestionToExam(self,Question_ID, Sub_Code, Exam_Date, Exam_Code, Mix_Option, Mix_Correct_Choice_IDs):
         if self.connection.is_connected():
             cursor = self.connection.cursor()
-            cursor.callproc('add_question_to_exam', [Question_ID, Sub_Code, Exam_Date, Exam_Code, Level, Question_No,\
-                Mix_Option, Mix_Correct_Choice_IDs, Number_Of_Choices])
-            newQuestions = Question(Question_ID, Sub_Code, Exam_Date, Exam_Code, Level, Question_No, Mix_Option,\
-                Mix_Correct_Choice_IDs, Number_Of_Choices)
-            addQuestion4Choices(newQuestions) if Number_Of_Choices==4 else addQuestion5Choices(newQuestions)
+            cursor.execute("SELECT MAX(Question_No) FROM IN_EXAM WHERE Subject_Code = %s \
+                AND Exam_Date = %s AND Exam_Code = %s", (Sub_Code, Exam_Date, Exam_Code))
+            max_quesNo = cursor.fetchone()
+            QuesNo = 1
+            if max_quesNo[0]:
+                QuesNo = max_quesNo[0] + 1
+            cursor.callproc('add_question_to_exam', [Question_ID, Sub_Code, Exam_Date, Exam_Code, QuesNo,\
+                Mix_Option, Mix_Correct_Choice_IDs])
+            
             cursor.close()
 
     # confirm exam
@@ -123,7 +122,6 @@ class lecturerInChargeUtils:
             cursor.close()
             return lstStdAns
 
-    ## LA begin
     # View question of subject that lecturer in charge
     def viewQuestionList(self, subCode):
         if self.connection.is_connected():
@@ -133,8 +131,16 @@ class lecturerInChargeUtils:
                 FROM LEC_INCHARGE_SUB JOIN LECTURER ON Lecturer_ID = Inchr_Lecturer_ID) l \
                 ON Ctrb_Lecturer_ID = Lecturer_ID WHERE Inchr_Subject_Code = '%s' ORDER BY Question_ID" % subCode)
             quesList = cursor.fetchall()
+            for i in range(len(quesList)):
+                quesList[i] = list(quesList[i])
+                if len(quesList[i][1]) > 80:
+                    k = 80
+                    while quesList[i][1][k] not in [' ', '\n']: k += 1
+                    quesList[i][1] = quesList[i][1][:k] + "..."
+                quesList[i] = tuple(quesList[i])
             cursor.close()
             return quesList
+
 
     # Get outcomes of subject
     def getOutcomeList(self, subCode):
@@ -205,8 +211,26 @@ class lecturerInChargeUtils:
             
             cursor.close()
             return new_desID
+    
+    # Get exam times later than current date of subject
+    def getExamtimeList(self, subCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT Exam_Date, Semester FROM EXAM_TIME WHERE Subject_Code = '%s' AND Exam_Date > CURDATE()" % subCode)
+            examtimeList = cursor.fetchall()
+            cursor.close()
+            return examtimeList
 
-    ## LA end
+    """ change for exam BEGIN """
+    # Get exam times later than current date of subject
+    def getOneExam(self, subCode, examDate, examCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT * FROM EXAM_SOLUTION WHERE Subject_Code = %s AND Exam_Date = %s AND Exam_Code = %s ORDER BY Question_No, Choice_ID",(subCode, examDate, examCode))
+            oneExam = cursor.fetchall()
+            cursor.close()
+            return oneExam
+    """ change for exam END """
 
     def __del__(self):
         self.connection.close()

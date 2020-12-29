@@ -94,7 +94,6 @@ class lecturerUtils:
     def __del__(self):
         self.connection.close()
 
-    ## LA begin
     # View subject list that lecturer in charge
     def viewInchrSubject(self, lecID):
         if self.connection.is_connected():
@@ -112,7 +111,27 @@ class lecturerUtils:
             mgrSub = cursor.fetchall()
             cursor.close()
             return mgrSub
-    ## LA end
+
+    """ change for exam BEGIN """
+    def getExamList(self, subCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT * FROM (EXAM_TIME NATURAL JOIN EXAM) LEFT JOIN \
+                (SELECT Lecturer_ID, Last_Name, First_Name FROM LECTURER) l ON Lecturer_ID = BC_Lecturer_ID \
+                    WHERE Subject_Code = '%s' ORDER BY Exam_Date DESC" % subCode)
+            examList = cursor.fetchall()
+            cursor.close()
+            return examList
+
+    def getLecturerRole(self, lecID, subCode):
+        if self.connection.is_connected():
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT * FROM LEC_INCHARGE_SUB WHERE Inchr_Lecturer_ID = %s AND Inchr_Subject_Code = %s", (lecID, subCode))
+            data = cursor.fetchone()
+            cursor.close()
+            return data[2]
+    """ change for exam END """
+
 
 if __name__ == "__main__":
     newUtils = lecturerUtils()

@@ -51,6 +51,8 @@ class ExamView:
                     currentList.append([item.Choice_ID, item.Choice_Content])
             if len(currentList) == 8:
                 currentList.append([None,None])
+            while len(currentList) != 9:
+                currentList.pop()
             listInfo.append(currentList)
             return listInfo
 

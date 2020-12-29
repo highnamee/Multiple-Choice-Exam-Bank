@@ -16,7 +16,7 @@
     <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='loginCssStyle/vendor/bootstrap/css/bootstrap.min.css') }}">
     <!-- Site CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- ALL VERSION CSS -->
@@ -112,7 +112,7 @@
                         {% else %}
                             <input type="checkbox" name={{QNo}} value="D"  onclick="return false;"/>
                         {% endif %}
-                        <label for={{QNo}}>&nbsp;&nbsp;&nbsp;D:{{DAnsswer[1]}}</label>
+                        <label for={{QNo}}>&nbsp;&nbsp;&nbsp;D: {{DAnsswer[1]}}</label>
                     </div>
 
                     {% if EAnsswer[1] != None %}
@@ -122,7 +122,7 @@
                         {% else %}
                             <input type="checkbox" name={{QNo}} value="D"  onclick="return false;"/>
                         {% endif %}
-                        <label for={{QNo}}>&nbsp;E: {{EAnsswer[1]}}</label>
+                        <label for={{QNo}}>&nbsp;&nbsp;&nbsp;E: {{EAnsswer[1]}}</label>
                     </div>
                     {% endif %}
 

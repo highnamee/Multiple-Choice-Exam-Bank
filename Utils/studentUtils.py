@@ -14,6 +14,7 @@ FLUSH PRIVILEGES;
 
 This is example, let's create a function as API
 """
+
 @dataclass
 class ExamViewItem:
     Subject_Code: str
@@ -36,6 +37,13 @@ class ExamViewItem:
 class ExamView:
     QuestionList: List[ExamViewItem]
 
+    def removeDuplicates(self, reList):
+        newList = []
+        for item in reList:
+            if (isinstance(item, list) and item not in newList) or not isinstance(item,list):
+                newList.append(item)
+        return newList
+
     def getDisplayInfo(self):
         if self.QuestionList:
             listInfo = []
@@ -44,13 +52,21 @@ class ExamView:
                 if item.Question_No == currentList[0]:
                     currentList.append([item.Choice_ID, item.Choice_Content])
                 else:
+                    currentList = self.removeDuplicates(currentList)
                     if len(currentList) == 8:
                         currentList.append([None,None])
+                    # while len(currentList) != 9:
+                    #     currentList.pop()
+                    #     self.removeDuplicates(currentList)
                     listInfo.append(currentList)
                     currentList = [item.Question_No, item.CDescription, item.QContent, item.QFile_Path]
                     currentList.append([item.Choice_ID, item.Choice_Content])
+            currentList = self.removeDuplicates(currentList)
             if len(currentList) == 8:
                 currentList.append([None,None])
+            # while len(currentList) != 9:
+            #     currentList.pop()
+            #     self.removeDuplicates(currentList)
             listInfo.append(currentList)
             return listInfo
 
@@ -83,6 +99,13 @@ class StudentAnswerItem:
 class StudentAnswerView:
     AnswerList: List[StudentAnswerItem]
 
+    def removeDuplicates(self, reList):
+        newList = []
+        for item in reList:
+            if (isinstance(item, list) and item not in newList) or not isinstance(item,list):
+                newList.append(item)
+        return newList
+
     def getDisplayInfo(self):
         if self.AnswerList:
             listInfo = []
@@ -91,13 +114,19 @@ class StudentAnswerView:
                 if item.Question_No == currentList[0]:
                     currentList.append([item.Choice_ID, item.Choice_Content])
                 else:
+                    currentList = self.removeDuplicates(currentList)
                     if len(currentList) == 11:
                         currentList.append([None,None])
+                    # while len(currentList) != 12:
+                    #     currentList.pop()
                     listInfo.append(currentList)
                     currentList = [item.Question_No, item.CDescription, item.QContent, item.QFile_Path, item.Mix_Correct_Choice_IDs, item.Check_Sol, list(item.Answer_Choice_IDs)]
                     currentList.append([item.Choice_ID, item.Choice_Content])
+            currentList = self.removeDuplicates(currentList)
             if len(currentList) == 11:
                 currentList.append([None,None])
+            # while len(currentList) != 12:
+            #     currentList.pop()
             listInfo.append(currentList)
             return listInfo
 

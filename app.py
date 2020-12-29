@@ -17,6 +17,13 @@ app = Flask(__name__)
 app.secret_key = "Database 201"
 app.config['UPLOAD_FOLDER'] = 'static/desImg/'
 
+def removeDuplicatesTuple(reList):
+    newList = []
+    for item in reList:
+        if (isinstance(item, tuple) and item not in newList) or not isinstance(item,tuple):
+            newList.append(item)
+    return newList
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -76,6 +83,7 @@ def editQuestion4(subCode, subName, lecType, quesID):
         if req.get("correctCh4"): correctChIDs += req.get("correctCh4")        
 
         qDes = request.files['qDes']
+        print(req)
         qDesID = quesInfo[10]
         if qDes.filename != '':
             qDesName = secure_filename(qDes.filename)
@@ -132,6 +140,7 @@ def addQuestion4(subCode, subName, lecType):
         if req.get("correctCh4"): correctChIDs += req.get("correctCh4")        
 
         qDes = request.files['qDes']
+        print(qDes.filename)
         qDesID = None
         if qDes.filename != '':
             qDesName = secure_filename(qDes.filename)
@@ -172,12 +181,71 @@ def addQuestion4(subCode, subName, lecType):
         return redirect(url_for('subject', subCode = subCode, subName = subName, lecType = lecType))
     return render_template('question_form4.html', user = session["accountState"], subInfo = subInfo, ocList = outcomeList)
 
+### change for exam BEGIN 
 @app.route('/lec/exam')
 def exam():
     newUtils = lecturerUtils()
     inchrSub = newUtils.viewInchrSubject(session["accountState"]["ID"])
     mgrSub = newUtils.viewMgrSubject(session["accountState"]["ID"])
     return render_template('exam.html', user = session["accountState"], inchrSub = inchrSub, mgrSub = mgrSub)
+
+@app.route('/lec/exam?<subCode>?<subName>?<lecType>')
+def exam_subject(subCode, subName, lecType):
+    subInfo = (subCode, subName)
+    newUtils = lecturerUtils()
+    examList = newUtils.getExamList(subCode)
+    lecRole = newUtils.getLecturerRole(session["accountState"]["ID"], subCode) if lecType == 'Incharge' else None
+    lecInfo = (lecType, lecRole)
+    return render_template('exam_subject.html', user = session["accountState"], subInfo = subInfo, lecInfo = lecInfo, examList = examList)
+
+@app.route('/lec/exam?<subCode>?<subName>?<lecType>?newexam', methods=['GET', 'POST'])
+def createExam(subCode, subName, lecType):
+    subInfo = (subCode, subName, lecType)
+    newUtils = lecturerInChargeUtils()
+    quesList = newUtils.viewQuestionList(subCode)
+    examtimeList = newUtils.getExamtimeList(subCode)
+    if request.method == "POST":
+        req = request.form
+        checkList = req.getlist("checkbox")
+
+        examtime = req.get("examtime")
+        newUtils.createExam(subCode, examtime, "2001", "Đã hoàn thành", session["accountState"]["ID"])
+
+        for i in range(len(checkList)):
+            # Question_ID, Sub_Code, Exam_Date, Exam_Code, Mix_Option, Mix_Correct_Choice_IDs
+            quesID = checkList[i][:9]
+            numChoice = int(checkList[i][-1])
+            correctChIDs = checkList[i][10:-2]
+            mixCorrect = ""
+            for j in range(len(correctChIDs)):
+                if correctChIDs[j] == "A":
+                    mixCorrect += "B"
+                elif correctChIDs[j] == "B":
+                    mixCorrect += "C"
+                elif correctChIDs[j] == "C":
+                    mixCorrect += "D"
+                elif correctChIDs[j] == "D":
+                    mixCorrect = mixCorrect + "A" if numChoice == 4 else mixCorrect + "E"
+                else:
+                    mixCorrect += "A"
+            mixCorrect =''.join(sorted(mixCorrect))
+
+            newUtils.addQuestionToExam(quesID, subCode, examtime, "2001", 1, mixCorrect)
+        
+        return redirect(url_for('exam_subject', subCode = subCode, subName = subName, lecType = lecType))
+
+    return render_template('exam_form.html', user = session["accountState"], subInfo = subInfo, quesList = quesList, extimeList = examtimeList)
+
+@app.route('/lec/mcq?<subCode>?<subName>?<lecType>?<examDate>+<examCode>')
+def lecViewExam(subCode, subName, lecType, examDate, examCode):
+    subInfo = (subCode, subName, lecType)
+    newUtils = lecturerInChargeUtils()
+    exam = newUtils.getOneExam(subCode, examDate, examCode)
+    print(exam)
+    exam = removeDuplicatesTuple(exam)
+
+    return render_template('lec_view_exam.html', user = session["accountState"], subInfo = subInfo, exam = exam)
+### change for exam END
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -240,8 +308,10 @@ def take_exam(SubjectCode, ExamDate):
     newUtils = studentUtils()
     question = newUtils.viewPerformedExam(SubjectCode, ExamDate, '2001')
     subName = ""
-    if question:
+    if question and question.QuestionList:
         subName = question.QuestionList[0].Subject_Name
+    for item in question.getDisplayInfo():
+        print(item)
     return render_template('take_exam.html', exam = question.getDisplayInfo(), SubjectName = subName, SubCode = SubjectCode, Date = ExamDate, StudentID = session["accountState"]["ID"])
 
 
